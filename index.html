@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>داشبورد تحلیل هوشمند عملکرد پیج | sarino.shop_</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --card-hover: #1e293b;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #8b5cf6;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-main: 'Vazirmatn', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-main);
+      line-height: 1.6;
+      padding: 24px 16px;
+      direction: rtl;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(17, 24, 39, 0.9) 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px 32px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    .header-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-info {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 4px 14px rgba(220, 39, 67, 0.4);
+    }
+
+    .profile-meta h1 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .profile-meta p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .badge-live {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--primary);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-live::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-color: var(--success);
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .bio-box {
+      margin-top: 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 0.88rem;
+      color: #d1d5db;
+      white-space: pre-line;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .kpi-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .kpi-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .kpi-sub {
+      font-size: 0.78rem;
+      margin-top: 6px;
+      color: var(--text-muted);
+    }
+
+    .highlight-green {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .highlight-blue {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .highlight-purple {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .nav-tab {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 10px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-tab.active, .nav-tab:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Strategy Grid */
+    .strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .icon-blue { background: rgba(59, 130, 246, 0.2); color: var(--primary); }
+    .icon-green { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+    .icon-orange { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+    .icon-purple { background: rgba(139, 92, 246, 0.2); color: var(--accent); }
+
+    .rule-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .rule-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .rule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .rule-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #e5e7eb;
+    }
+
+    .rule-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .badge-winner {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-loser {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .timing-badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-left: 6px;
+    }
+
+    /* Posts Table & Controls */
+    .table-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: var(--font-main);
+      transition: all 0.15s;
+    }
+
+    .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .search-box {
+      background: #0d121f;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      width: 220px;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .sort-select {
+      background: #0d121f;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .post-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .post-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .post-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .post-type {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .type-Reel { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); }
+    .type-Carousel { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .type-Photo { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .post-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .post-caption {
+      font-size: 0.84rem;
+      color: #e5e7eb;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      max-height: 90px;
+      overflow: hidden;
+      position: relative;
+      word-break: break-word;
+    }
+
+    .post-stats {
+      display: flex;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .stat-num {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-lbl {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .post-link {
+      display: block;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--primary);
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      transition: all 0.2s;
+    }
+
+    .post-link:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      margin-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    /* Action Checklist */
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .check-icon {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="header-top">
+        <div class="profile-info">
+          <div class="avatar">🛍️</div>
+          <div class="profile-meta">
+            <h1>آنلاین شاپ سَرینو <span style="font-size: 1rem; color: #9ca3af; font-weight: 400;">(sarino.shop_)</span></h1>
+            <p>سفارش اختصاصی از دبی، ترکیه، ایتالیا و کانادا | ارسال سراسری</p>
+          </div>
+        </div>
+        <div class="badge-live">تحلیل زنده ۱۱۹ پست پیج</div>
+      </div>
+      <div class="bio-box">
+❞سـَريـنو❝
+New Shopping Experience With Sarir 🛍️
+ثبت سفارش از دبی🇦🇪 ، ایتالیا🇮🇹 , کانادا🇨🇦 و ترکیه 🇹🇷
+ارسال به سراسر ایران📦 | ثبت سفارش از طریق دایرکت 📥
+      </div>
+    </header>
+
+    <!-- KPIs -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">نرخ تعامل پیج (ER) <span>📈</span></div>
+        <div class="kpi-value highlight-green">3.93%</div>
+        <div class="kpi-sub">بالاتر از استاندارد پیج‌های فروشگاهی (عالی)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">میانگین ویو هر ریلز <span>👁️</span></div>
+        <div class="kpi-value highlight-blue">3,515</div>
+        <div class="kpi-sub">بالاترین ریلز: <span class="highlight-blue">8,153</span> ویو</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">برتری لایک ریلز نسبت به اسلایدی <span>⚡</span></div>
+        <div class="kpi-value highlight-purple">3.5x</div>
+        <div class="kpi-sub">109 لایک در ریلز vs 31 لایک در اسلایدی</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">کل پست‌های بررسی‌شده <span>📦</span></div>
+        <div class="kpi-value">119</div>
+        <div class="kpi-sub">34 ریلز | 79 اسلایدی | 6 تک‌عکس</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('tab-strategy')">🎯 چه محتوایی تولید کنیم؟ (استراتژی محتوا)</button>
+      <button class="nav-tab" onclick="switchTab('tab-timing')">⏰ چه زمانی پست بذاریم؟ (زمان‌بندی و تقویم)</button>
+      <button class="nav-tab" onclick="switchTab('tab-charts')">📊 نمودارهای مقایسه‌ای و ترندها</button>
+      <button class="nav-tab" onclick="switchTab('tab-posts')">📋 آرشیو و آمار ۱۱۹ پست قبلی</button>
+    </div>
+
+    <!-- TAB 1: CONTENT STRATEGY -->
+    <div id="tab-strategy" class="tab-content active">
+      <div class="strategy-grid">
+        
+        <!-- Winners -->
+        <div class="card">
+          <div class="card-title">
+            <span class="icon icon-green">🔥</span>
+            محتواهای برنده و پولساز سَرینو
+          </div>
+          
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">۱. آنباکس بسته‌های وارداتی از ترکیه و دبی</span>
+              <span class="badge-winner">بیشترین کامنت (۱۱.۲)</span>
+            </div>
+            <div class="rule-desc">
+              دیدن جعبه پستی، باز کردن بار و چک کردن بارکد و لیبل اصالت کالا، شک مشتری را در خرید کالای خارجی به صفر می‌رساند.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">۲. معرفی آیتم‌های «موجود در ایران»</span>
+              <span class="badge-winner">میانگین لایک ۱۱۴.۵</span>
+            </div>
+            <div class="rule-desc">
+              مشتریانی که حوصله انتظار بار ۲ تا ۳ هفته‌ای ترکیه را ندارند یا برای کادو تولد عجله دارند، فوری این آیتم‌ها را خریداری می‌کنند.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">۳. ولاگ و داستان شروع و پشت‌صحنه</span>
+              <span class="badge-winner">میانگین لایک ۱۳۹.۵</span>
+            </div>
+            <div class="rule-desc">
+              پست «داستان من» ۳۱۳ لایک و ۲۳ کامنت گرفت! مردم از انسان‌ها خرید می‌کنند نه از یک کاتالوگ بی‌روح. چهره یا صدای ادمین اعتمادساز است.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">۴. تست سایز و ویدیو تنخور واقعی</span>
+              <span class="badge-winner">۳۸۹ لایک (پست کفش)</span>
+            </div>
+            <div class="rule-desc">
+              پست «حالا شده کفش با سایز اشتباه سفارش بدی؟» ترکوند! نشان دادن جزئیات جنس، لژ، دوخت و زبانه کفش خرید را قطعی می‌کند.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Losers / Traps -->
+        <div class="card">
+          <div class="card-title">
+            <span class="icon icon-orange">⚠️</span>
+            تله‌ها و محتواهایی که باید متوقف یا اصلاح شوند
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">۱. اسلایدهای کاتالوگی خشک (ژورنالی)</span>
+              <span class="badge-loser">افت لایک تا ۱۰ تا ۱۵ عدد</span>
+            </div>
+            <div class="rule-desc">
+              ۷۹ پست (۶۶٪ کل پیج) اسلایدی است که بدترین بازخورد را داشته‌اند. اینستاگرام اسلایدی‌های ساده را به اکسپلور نمی‌برد و ویو نمی‌گیرند.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">۲. تله «قیمت و سفارش در دایرکت»</span>
+              <span class="badge-loser">سکوت بخش کامنت‌ها</span>
+            </div>
+            <div class="rule-desc">
+              در ۷۱ پست نوشته شده «دایرکت بدین» در حالی که فقط ۱ پست کامنت‌مارکتینگ داشته! وقتی کامنت صفر باشد، الگوریتم پست را مرده فرض می‌کند.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">۳. رها کردن پیج بدون ریلز عمودی</span>
+              <span class="badge-loser">از دست رفتن اکسپلور</span>
+            </div>
+            <div class="rule-desc">
+              تنها ۳۴ ریلز در پیج وجود دارد، در حالی که منبع ۹۰٪ فالوورهای جدید در سال ۲۰۲۶ ریلزهای جذاب ۹:۱۶ با هوک ۳ ثانیه‌ای است.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Action Plan -->
+      <div class="card">
+        <div class="card-title">
+          <span class="icon icon-blue">🚀</span>
+          چک‌لیست طلایی ۳۰ روز آینده برای دو برابر شدن فروش
+        </div>
+        
+        <div class="checklist-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <strong>توقف کامل پست‌های کاتالوگی ژورنالی:</strong> تمام معرفی محصولات باید در قالب ریلزهای ویدیویی با فیلمبرداری از نمای نزدیک و واقعی از محصول انجام شود.
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <strong>اجرای اتوماسیون کامنت به جای دایرکت:</strong> در کپشن و انتهای ریلز بگویید: <em>«کلمه "ترکیه" یا "قیمت" رو کامنت کن تا لینک و قیمت نهایی رو همون لحظه برات دایرکت بفرستم»</em>.
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <strong>کاور ریلز با فونت بولد و بزرگ:</strong> ثانیه اول ویدیو باید پاسخ یک نیاز باشد (مثلاً: «۳ آیتم زارا که زیر ۱ میلیون تموم میشه!» یا «این کفش گس رو چطور فیک و اصلش رو تشخیص بدیم؟»).
+          </div>
+        </div>
+
+        <div class="checklist-item">
+          <div class="check-icon">✓</div>
+          <div>
+            <strong>هایلایت شفاف و مرتب:</strong> هایلایت‌های «رضایت مشتری»، «آنباکس بار»، «موجودی ایران» و «نحوه ثبت سفارش» در بالای پیج پین شوند.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: TIMING STRATEGY -->
+    <div id="tab-timing" class="tab-content">
+      <div class="strategy-grid">
+        
+        <div class="card">
+          <div class="card-title">
+            <span class="icon icon-purple">⏰</span>
+            ساعات و روزهای طلایی انتشار برای سَرینو
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">روزهای با بالاترین تعامل و بازدید</span>
+            </div>
+            <div class="rule-desc" style="margin-top: 8px;">
+              <span class="timing-badge">پنج‌شنبه‌ها</span>
+              <span class="timing-badge">چهارشنبه‌ها</span>
+              <span class="timing-badge">جمعه‌ها</span>
+              <p style="margin-top: 8px;">در روزهای پایانی هفته، مخاطبان بیشترین فراغت را برای بررسی خریدهای آنلاین و چک کردن حراج‌های ترکیه و دبی دارند.</p>
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">ساعات طلایی انتشار ریلز و پست</span>
+            </div>
+            <div class="rule-desc" style="margin-top: 8px;">
+              <span class="timing-badge">۱۸:۳۰ الی ۲۱:۳۰ (عصر و شب)</span>
+              <span class="timing-badge">۱۳:۰۰ الی ۱۵:۰۰ (ظهر)</span>
+              <p style="margin-top: 8px;">انتشار پست در بازه ۱۹ تا ۲۱ باعث می‌شود بیشترین حجم تعامل اولیه (First 1-Hour Velocity) ثبت شود و ویدیو وارد فاز اکسپلور شود.</p>
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">هشدار حیاتی: خطر توقف طولانی در پیج</span>
+              <span class="badge-loser">توقف ۵ ماهه قبلی</span>
+            </div>
+            <div class="rule-desc">
+              پیج سَرینو از دی ۱۴۰۴ تا خرداد ۱۴۰۵ متوقف بوده که ضربه بزرگی به تعامل فید زد. در اینستاگرام، تعهد به انتشار پایدار حتی ۲ پست در هفته بسیار موثرتر از ۱۰ پست در یک هفته و سپس سکوت است.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span class="icon icon-green">📅</span>
+            تقویم و برنامه منظم هفتگی پیشنهادی
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">یکشنبه ساعت ۱۹:۰۰</span>
+              <span class="badge-winner">ریلز اعلام حراج</span>
+            </div>
+            <div class="rule-desc">
+              معرفی آف‌های ویژه برندهای خارجی (تامی، زارا، پول اند بیر یا مانگو) به صورت ویدیویی.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">سه‌شنبه ساعت ۱۸:۳۰</span>
+              <span class="badge-winner">ریلز موجودی تحویل فوری</span>
+            </div>
+            <div class="rule-desc">
+              تمرکز روی محصولاتی که داخل ایران هستند و با پست پیشتاز یا تیپاکس ۲ روزه به دست خریدار می‌رسند.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">پنج‌شنبه ساعت ۲۰:۰۰</span>
+              <span class="badge-winner">آنباکسینگ و رضایت مشتری</span>
+            </div>
+            <div class="rule-desc">
+              باز کردن کارتن‌های بار رسیده، نمایش بسته‌بندی تمیز و شیک برای مشتریان، و پشت صحنه ارسال‌ها.
+            </div>
+          </div>
+
+          <div class="rule-item">
+            <div class="rule-header">
+              <span class="rule-title">استوری‌های روزانه (همه‌روزه)</span>
+              <span class="badge-winner">۵ الی ۸ استوری</span>
+            </div>
+            <div class="rule-desc">
+              استعلام نرخ لیر/درهم، پاسخ به سوالات خریداران، مقایسه سایزها و لینک‌های مستقیم وب‌سایت‌های ترکیه.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 3: CHARTS -->
+    <div id="tab-charts" class="tab-content">
+      <div class="strategy-grid">
+        <div class="card">
+          <div class="card-title">
+            <span class="icon icon-blue">📊</span>
+            مقایسه میانگین لایک بر اساس فرمت محتوا
+          </div>
+          <div class="chart-container">
+            <canvas id="chartFormatLikes"></canvas>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; text-align: center;">
+            ریلز با ۱۰۹.۳ لایک به وضوح برنده میدان است، در حالی که اسلایدی‌ها با ۳۱ لایک افت شدید داشته‌اند.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span class="icon icon-purple">📈</span>
+            روند تعداد پست‌های منتشرشده در ماه‌ها
+          </div>
+          <div class="chart-container">
+            <canvas id="chartMonthlyPosts"></canvas>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px; text-align: center;">
+            نمودار گپ فعالیت ۵ ماهه را به خوبی نشان می‌دهد که با بازگشت اخیر در حال رشد مجدد است.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: ALL 119 POSTS ARCHIVE -->
+    <div id="tab-posts" class="tab-content">
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="table-controls">
+          <div class="filter-group">
+            <button class="filter-btn active" onclick="filterPosts('ALL', this)">همه (119)</button>
+            <button class="filter-btn" onclick="filterPosts('Reel', this)">ریلزها (34)</button>
+            <button class="filter-btn" onclick="filterPosts('Carousel', this)">اسلایدی (79)</button>
+            <button class="filter-btn" onclick="filterPosts('Photo', this)">تک‌عکس (6)</button>
+          </div>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <input type="text" id="searchInput" class="search-box" placeholder="جستجو در کپشن یا کد..." oninput="applyFilters()">
+            <select id="sortSelect" class="sort-select" onchange="applyFilters()">
+              <option value="likes_desc">بیشترین لایک</option>
+              <option value="comments_desc">بیشترین کامنت</option>
+              <option value="plays_desc">بیشترین ویو ریلز</option>
+              <option value="newest">جدیدترین پست‌ها</option>
+              <option value="oldest">قدیمی‌ترین پست‌ها</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="postsCountMsg" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+          نمایش ۱۱۹ پست
+        </div>
+
+        <div id="postsGrid" class="posts-grid">
+          <!-- Dynamically filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      داشبورد تحلیل اختصاصی اینستاگرام برای پیج <strong>sarino.shop_</strong> | تولیدشده با ❤️ و داده‌های هوشمند فید
+    </footer>
+
+  </div>
+
+  <script>
+    // Embedded Posts Data
+    const RAW_POSTS = [{"id": "3985403846987032395", "code": "DdO_67qIydL", "type": "Photo", "date": "2026-09-13", "time": "20:18", "weekday": "یک‌شنبه", "hour": 20, "likes": 102, "comments": 6, "plays": 0, "caption": "از اونجایی که اینروزا همه رفتن دهه ۸۰ میلادی و دهه ۶۰ شمسی منم خواستم یه عکس اون سبکی واسه پیجم داشته باشم 🥲🙈", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/808585098_17906660082517728_4171250465023224549_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=103&ig_cache_key=Mzk4NTQwMzg0Njk4NzAzMjM5NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTUwMi5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=Z5WNsrtsoW4Q7kNvwEXaQpA&_nc_oc=Adp-i468U0h3HUf6zbLArZp-tJlryVjBEuJxp_UOO_S_2JL7LPu_kwedBgW0AJSDoUEWORTl_Zo3YEuQfbGIzeSO&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQI6lrF0DJLjs7ewpquYu6MrUu7f5QRUIj2rF5gjFeaGEg&oe=6AB21004", "url": "https://www.instagram.com/p/DdO_67qIydL/"}, {"id": "3984685796000031020", "code": "DdMcp6kIGEs", "type": "Reel", "date": "2026-09-12", "time": "20:28", "weekday": "شنبه", "hour": 20, "likes": 108, "comments": 12, "plays": 3739, "caption": "⁨\tاگه تحمل نداری تا سفارشت برسه این پست واسه توئه 🤩\nچرا؟؟؟ چون همه‌ی این آیتم ها موجود در ایران هستن 🌸\nواسه دیدن بقیه آیتم ها ویدیو پارت یک رو ببینین و هایلایت موجودی ها رو چک کنید😍⁩", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/807797427_17906510292517728_4659182374595029374_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=106&ig_cache_key=Mzk4NDY4NTc5NjAwMDAzMTAyMDE3OTA2NTEwMjg2NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMDYuc2RyLnZpZGVvX3VzZXJfdXBsb2FkZWRfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=IVandMHQ09MQ7kNvwG_sbao&_nc_oc=AdpLdobEb0hSBLlBqOJ4mIC-U8Uv3Ym_q68I7oL6FBIZdD4f7k4LC3wabkN7Kl0ctXCu1fl_NSOphgrYEN9SArJ8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQJ05EIoUpxTVgofBCoUTmz6J3gh-BXFnVPL23cPn1KbmQ&oe=6AB1F3A3", "url": "https://www.instagram.com/p/DdMcp6kIGEs/"}, {"id": "3981598500173726953", "code": "DdBer2RFUTp", "type": "Carousel", "date": "2026-09-08", "time": "14:02", "weekday": "سه‌شنبه", "hour": 14, "likes": 14, "comments": 1, "plays": 0, "caption": "این آف ۵۰٪ کلوین کلاین فقط تا فردا صبح اعتبار داره 😱\nپس امروز هرچی که میخواین رو سفارش بدین 🥰\nتعداد آیتم ها خیلی زیاده 😍\nاستوری ها رو چک کنید ولی بازم من همه رو نمیتونم بذارم واستون \nپس بهم دایرکت بدین تا لینک واستون بفرستم 🤍\n\n#کلوین_کلاین #تخفیف #کانادا #آنلاین_شاپ #سرینو", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/800421739_17905819620517728_8212888710564188438_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=Mzk4MTU5NzIwMTI5MjAyNDgwOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTEyMi5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=w3tUuVm4GUQQ7kNvwHgreIv&_nc_oc=Adq38jYfjqfnu6dHH4gDecLDJWPwQVAeqdookEZiua-qJ7qNMje3OjXd3ZcN5P7AmlVL6xbZD1s-8Gg8zIZGbDCB&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQJQkFMjl7H-AxxHzBqk1cmTl8vRNZPvC1X-61gRMWt-3g&oe=6AB21EFE", "url": "https://www.instagram.com/p/DdBer2RFUTp/"}, {"id": "3979609418175136817", "code": "Dc6aa5TIMQx", "type": "Reel", "date": "2026-09-05", "time": "20:19", "weekday": "شنبه", "hour": 20, "likes": 107, "comments": 8, "plays": 1521, "caption": "یکی بخر ۲تا ببر 🤭\nواسه ثبت سفارش کافیه بهم دایرکت بدی 🥰\n\n#کمربند #آنلاین_شاپ #onlineshop #کلوین_کلاین #calvinklein", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t15.5256-10/797336245_1694251545006027_2065497933264778337_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=108&ig_cache_key=Mzk3OTYwOTQxODE3NTEzNjgxNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZmlyc3RfZnJhbWVfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=I94C9bt7s6EQ7kNvwHecJF1&_nc_oc=Ado6kVZS4_OK4QlukrTYGpJx9Wigqb-9gdv6bPbb0PTCkiIXzNgYE7iP1wqYOgbwmOvOwouSWNIXB9W7l4gO3aOV&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQL1F6XCHKnudKYdGa_uBS9vwUW9DvaBSHUNlRmZ0xnNsw&oe=6AB2259C", "url": "https://www.instagram.com/p/Dc6aa5TIMQx/"}, {"id": "3977924838930044609", "code": "Dc0bZCnoNbB", "type": "Reel", "date": "2026-09-03", "time": "13:33", "weekday": "پنج‌شنبه", "hour": 13, "likes": 101, "comments": 2, "plays": 1777, "caption": "هر کی برده راضی بوده 😁😁\n\n#آنلاین_شاپ #لگ_بوتکات #ترندیول #سفارش_از_ترکیه #onlineshop", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/792252909_17905085667517728_383787943889440004_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=109&ig_cache_key=Mzk3NzkyNDgzODkzMDA0NDYwOTE3OTA1MDg1NjYxNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMTUuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=1pTJrbTBIyAQ7kNvwFTTIMO&_nc_oc=Ado3VNXs1QBeZdGcqyWg8iSFYQvLPtVVzu2M6l_RYYQJCbnh_ke9yr6_6ytVKkyeNi4DJBD_RRukqtIMajIdBgVP&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQLbnKvBRwikppenawdx5p3HcKaygoHb6jTibNGmg4j8_A&oe=6AB1FE5F", "url": "https://www.instagram.com/p/Dc0bZCnoNbB/"}, {"id": "3973640876321743081", "code": "DclNVLiISDp", "type": "Reel", "date": "2026-08-28", "time": "14:36", "weekday": "جمعه", "hour": 14, "likes": 121, "comments": 7, "plays": 2903, "caption": "اگه میخوای واسه کسی هدیه بگیری و میخوای که سریع به دستت برسه، آیتم های موجود در ایران رو از دست نده 🙈😍", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/785688612_17904245520517728_1329576908358870391_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=109&ig_cache_key=Mzk3MzY0MDg3NjMyMTc0MzA4MTE3OTA0MjQ1NTE3NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMDYuc2RyLnZpZGVvX3VzZXJfdXBsb2FkZWRfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=miccisImZjMQ7kNvwH_45Ur&_nc_oc=AdrpZ463RogHmXf9NUPLSQkJq4VK4z0a9LZSGcWQkoIz4WB_gV4j_xJN3xhBPMXmS3G8fSMonDG5rynC5X5m9FJi&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQIlAeVzW4Mpr5JzivNC_8jFjtrc6dzssho4pTf7VRxCCA&oe=6AB2220C", "url": "https://www.instagram.com/p/DclNVLiISDp/"}, {"id": "3970908903474514914", "code": "DcbgJvjCMvi", "type": "Carousel", "date": "2026-08-24", "time": "20:04", "weekday": "دوشنبه", "hour": 20, "likes": 16, "comments": 0, "plays": 0, "caption": "لباسی که توی خونه میپوشیم رو فقط خودمون میبینیم، پس وقتی بهش اهمیت بدی یعنی به خودت اهمیت دادی 🥰🙈", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/786467871_17903709516517728_5710980649045015928_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=103&ig_cache_key=Mzk3MDkwMzQ5NzI3ODMzNDk2NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTIwNi5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=7Blo4pZoWWEQ7kNvwGa3W3I&_nc_oc=AdpX7dsGWUSXufoKUXlqDumGAtY_nm0CtkuchH7viZu6VTeYFE-joA1cZ8QUNJfDRv76xmwcQkjebr2TgrgpFds5&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQKRuWeFVsMcQZaOIPKLl6XpUrqR2FQSXBHsJZ7uomZVvA&oe=6AB211D7", "url": "https://www.instagram.com/p/DcbgJvjCMvi/"}, {"id": "3966353655768282142", "code": "DcLUaKho_Qe", "type": "Reel", "date": "2026-08-18", "time": "13:14", "weekday": "سه‌شنبه", "hour": 13, "likes": 122, "comments": 8, "plays": 4307, "caption": "شما خرید آنلاین رو ترجیح میدین یا حضوری ؟ 💁🏽‍♀️", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/774924798_17902715352517728_8632516244234324474_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=101&ig_cache_key=Mzk2NjM1MzY1NTc2ODI4MjE0MjE3OTAyNzE1MzQwNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjcyMC5zZHIudmlkZW9fdXNlcl9zZWxlY3RlZF90aHVtYm5haWwuQzMifQ%3D%3D&_nc_ohc=XKuTnlU82EIQ7kNvwHHkn2P&_nc_oc=AdokeLoHmrE88Rb9jJ0KKTWUDtyngz3ER1-Tm8gm_nl1W3Hc5Z4vl43ABSi6yg6mHh9WPIcO5Pqyu9_nJMU9xbAt&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQKasWov8cyaX9eYLUEWSedIiWO-6sx3wcgA22ED7dXrMQ&oe=6AB1F9AE", "url": "https://www.instagram.com/p/DcLUaKho_Qe/"}, {"id": "3962731651544920430", "code": "Db-c3EOiDFu", "type": "Carousel", "date": "2026-08-13", "time": "13:17", "weekday": "پنج‌شنبه", "hour": 13, "likes": 11, "comments": 0, "plays": 0, "caption": "⁨\tنه تنها تیشرت بلکه تامی کلی محصول دیگه هم توی آف داره 😍 \nهم زنونه ، هم مردونه 🥹 واسه دریافت لینک بهم دایرکت بدین\nقیمت و سایز های موجود این تیشرتارو هم واستون استوری می‌کنم 🙈\n\n#TommyHilfiger #سفارش_از_ترکیه #تیشرت_مردونه⁩", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/774116784_17901846747517728_1519594428302528477_n.jpg?stp=dst-jpg_e35_s1080x1080_sh2.08_tt6&_nc_cat=105&ig_cache_key=Mzk2MjczMTM3OTgwNjEwMTc4Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTI1NC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=_1KHdS7oLI8Q7kNvwHX33cW&_nc_oc=Adq8-O91EBcUe_S3mqQGGq29fc-77AFvZ-c-3uuNpOYJVNBCdaRdB5NqigcV52GZEPz2BmnFVN-H1mS9MPbPduyX&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQLwmQ1260lIunPkZfAqy8iWadTh3ZqfJxqR8aH6mOmuPQ&oe=6AB21440", "url": "https://www.instagram.com/p/Db-c3EOiDFu/"}, {"id": "3959436760056298068", "code": "DbyvsFZx3pU", "type": "Reel", "date": "2026-08-09", "time": "00:22", "weekday": "یک‌شنبه", "hour": 0, "likes": 119, "comments": 7, "plays": 3459, "caption": "⁨\t⁨\tتا سفارش از ترکیه رو شروع کردم با استقبال خوب شما روبرو شدم و‌ ذوقی‌ترینم 🥹 مرسی از اعتمادتون 🤍⁩⁩", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/770678363_17901133401517728_2644917026032227819_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=101&ig_cache_key=Mzk1OTQzNjc2MDA1NjI5ODA2ODE3OTAxMTMzMzk4NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEwMTMuc2RyLnZpZGVvX3VzZXJfdXBsb2FkZWRfdGh1bWJuYWlsLkMzIn0%3D&_nc_ohc=exXzJ2JRrgAQ7kNvwEY0wJg&_nc_oc=AdpvDj7awXWvB2hS92vLQRevtXlUbQzbqpq_Lwl6l8_87m0pfcyxy9A8P4edLD3aHJxzywBBg9xCYPY_Q8HmhwXS&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQKn2SzxLvlvbijdTtyhlAPa2DDMD4ERKfk5RWY5BhUnSg&oe=6AB2100D", "url": "https://www.instagram.com/p/DbyvsFZx3pU/"}, {"id": "3960059277536160910", "code": "Db09O5_CGyO", "type": "Carousel", "date": "2026-08-09", "time": "20:47", "weekday": "یک‌شنبه", "hour": 20, "likes": 18, "comments": 1, "plays": 0, "caption": "همه‌ی این کتونی های Pull&Bear توی تخفیف هستن و قیمتاشون خیلی خوب شده 😍 واسه قیمت استوری هارو‌ چک کنید یا عکسشو توی دایرکت بفرستین و من قیمتشو بهتون میگم 🩷", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/768586191_17901276756517728_8513961051256703913_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=Mzk2MDA1ODEwNjUwNTAyOTg1Mg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTEyMi5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=4PwUa_qNXfUQ7kNvwHBG-ac&_nc_oc=Adr-Ak3pgmt_KN8meZehrb3zzCRckz_E5MxA4Ke4SUXRK4HhEUxiyr8N41oSsiLX_-rOqarMDWuY7yNNasSei0Ap&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQLbKe8FiiW6DzygmOX6sccDj9mXRY2tJbMsZdXZwGmXSA&oe=6AB1F36C", "url": "https://www.instagram.com/p/Db09O5_CGyO/"}, {"id": "3957170740584934976", "code": "DbqsdKUIm5A", "type": "Reel", "date": "2026-08-05", "time": "21:15", "weekday": "چهارشنبه", "hour": 21, "likes": 181, "comments": 15, "plays": 8153, "caption": "ما سفارشارو در اسرع وقت به دستتون میرسونیم 😍 \nو اینم از اولین پارت سفارش ترکیه 🙈\n\n#آنلاین_شاپ #سفارش_ترکیه", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/766320663_17900638953517728_5797991376839224727_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=111&ig_cache_key=Mzk1NzE3MDc0MDU4NDkzNDk3NjE3OTAwNjM4OTQ3NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMTYuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=KtX6Pxaa-BIQ7kNvwEZ7cQR&_nc_oc=AdoWJekHvn1tRIWunbKLuorPWj837K2g15OKYIJ7MvKREP0Hbp54v--fCNwsvKg82rYbGESF1Z6JvLSYg5xQ3Xj5&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=8SDi7OWr50J7iLA4E04Kcw&_nc_ss=7a3ba&oh=00_AQK5vhTtvfVa0Thsic58i30-iaYujZWOVaBj52Gz-preTQ&oe=6AB20049", "url": "https://www.instagram.com/p/DbqsdKUIm5A/"}, {"id": "3957588484612991560", "code": "DbsLcIwiKpI", "type": "Carousel", "date": "2026-08-06", "time": "10:58", "weekday": "پنج‌شنبه", "hour": 10, "likes": 17, "comments": 2, "plays": 0, "caption": "بعضیاشون رنگ بندی دارن 🙈 بهم دایرکت بدین واستون میفرستم 😍👻", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/764056563_17900729670517728_6561166426362552493_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=109&ig_cache_key=Mzk1NzU4NzE0ODkwNTAzNTU5OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTIwMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=3xaHCu7j8mAQ7kNvwGKwTcY&_nc_oc=Adr5jo_ggLNe7QFmL6dJIVG94amzjMaDyQx8QybqtQcvK-LwteGImVbJFHNa-fTKjSQ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQKVtD1Qrcn_gOE_fiM9rtOVExXxIp5lkRqas_3T3YEEig&oe=6AB213D6", "url": "https://www.instagram.com/p/DbsLcIwiKpI/"}, {"id": "3955434228071682981", "code": "DbkhnlAolOl", "type": "Reel", "date": "2026-08-03", "time": "11:41", "weekday": "دوشنبه", "hour": 11, "likes": 23, "comments": 1, "plays": 1363, "caption": "اگه دوست داری سفارشت فوری به دستت برسه، آیتم هایی که توی ایران موجود می‌کنم رو از دست نده چون همشون از کانادا رسیدن و موجودیشون محدوده 🇨🇦🙈😍🇮🇷", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/761779657_17900236566517728_2474539451294757518_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=109&ig_cache_key=Mzk1NTQzNDIyODA3MTY4Mjk4MTE3OTAwMjM2NTYwNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMTUuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=ZQkDYR8rlxUQ7kNvwF9YJU8&_nc_oc=AdpkjHvLjmt1stCIS80c5IkArb85UVYwK3jitxA6kRzZ6NjppHEL2Uo5DFdKB2lu4Mg&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQIALgbv1vGLxzmOkKBOAgF6qFUdIDDJblru0AIEgsWsvw&oe=6AB20BDB", "url": "https://www.instagram.com/p/DbkhnlAolOl/"}, {"id": "3954094018337984440", "code": "Dbfw49biE-4", "type": "Carousel", "date": "2026-08-01", "time": "15:16", "weekday": "شنبه", "hour": 15, "likes": 25, "comments": 1, "plays": 0, "caption": "همه‌ی اسلاید های این پست از برند اویشو شدن فقط و فقط ۳،۹۰۰ت با احتساب باربری 😍 فرصت خیلی خوبیه که نباید از دستش بدین🙈 واسه ثبت سفارش بهم دایرکت بدین 🤩\n\n________________\n#اویشو #سفارش_از_ترکیه", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/758444453_17899914999517728_2474750105767355948_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=102&ig_cache_key=Mzk1NDA5Mjg2MTkyODEyNDM1Mw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTg0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=BOA5FLkzpgcQ7kNvwHFwsA0&_nc_oc=AdocmOxfYnM-e9xdo5RP1o68yxLTLxWQeaC757YbLfn4nNe3AsVoeMa0ibkxZfvDkGc&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQKTBbPa-Yfhq__XEgQuo4-wFQeYqyuB8KnRA0MGGq-O0g&oe=6AB20B84", "url": "https://www.instagram.com/p/Dbfw49biE-4/"}, {"id": "3953205693013816849", "code": "Dbcm6IAI_YR", "type": "Reel", "date": "2026-07-31", "time": "09:54", "weekday": "جمعه", "hour": 9, "likes": 68, "comments": 2, "plays": 2751, "caption": "⁨\tشما به جاش چی میخرین؟؟ 🫠⁩", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/758395852_17899747668517728_459527432877507637_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=110&ig_cache_key=Mzk1MzIwNTY5MzAxMzgxNjg0OTE3ODk5NzQ3NjYyNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMTUuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=RK63JNzfEgsQ7kNvwHyBC4q&_nc_oc=AdqMiTfhd3DxGV5XBhL1BKZzXnLBBFUqW923xj-rE_ERJPnyyPIXz1gP7LCDK1m0Uv4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQJ_rwk_-54VTcBiM-uSqP50wpm4V9yKQibd_FAdcak1Og&oe=6AB22650", "url": "https://www.instagram.com/p/Dbcm6IAI_YR/"}, {"id": "3950392430142091096", "code": "DbSnPwyAu9Yo5hh4d9_AnYaWsSFo2h95dlQKgw0", "type": "Carousel", "date": "2026-07-27", "time": "12:41", "weekday": "دوشنبه", "hour": 12, "likes": 313, "comments": 23, "plays": 0, "caption": "اینم از داستان من🦋🤍", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/753298665_18607264345052420_3214346644974651164_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=104&ig_cache_key=Mzk1MDM5MjAwNjkwMzg1MDU5Mg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMjUyNC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=shh4kYi03_0Q7kNvwEeIGNw&_nc_oc=Adp43DhlVxKvPxg3KmI3KSJJgSHfXCS3jneZuokYeCNDlr5Up1V8uvydqbqxr47kmJ8&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQISa0EKOdammNvFAgtxYshw99HZbmPyiV9CzwDWyFYsJA&oe=6AB20187", "url": "https://www.instagram.com/p/DbSnPwyAu9Yo5hh4d9_AnYaWsSFo2h95dlQKgw0/"}, {"id": "3942548077453825866", "code": "Da2vpaCiNdK", "type": "Carousel", "date": "2026-07-16", "time": "16:56", "weekday": "پنج‌شنبه", "hour": 16, "likes": 15, "comments": 0, "plays": 0, "caption": "این کیف یکی از خوشرنگ ترین ها و خاص‌ترین کیف‌هاییه که میتونین داشته باشین پس از دستش ندین چون قیمتش عالی شده 🙊\n\n______________________\n#کیف #USPOLOASSN #خرید_از_ترکیه #سفارش_از_ترکیه #Turkey", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/749066445_17897430156517728_2223610274840176945_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=108&ig_cache_key=Mzk0MjU0Nzg1NjQ0OTMxMzg0Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTIwNi5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=BYGqaaPtnT4Q7kNvwE8DSHN&_nc_oc=AdoKVRK0szAH-r4jw7dvOrKFsD7S0HbcKIH0Ee1GkSEzH9vCjyIwYzcFR9lFc8JDJ80&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQLZRji8jweV11QLkchI1X1C-w33nhMUeRpPcqx79nU5LQ&oe=6AB206E7", "url": "https://www.instagram.com/p/Da2vpaCiNdK/"}, {"id": "3935239330903235722", "code": "Dacx1JYohyK", "type": "Photo", "date": "2026-07-06", "time": "15:21", "weekday": "دوشنبه", "hour": 15, "likes": 14, "comments": 0, "plays": 0, "caption": "استوری ها رو از دست ندین که دارم آیتم های موجود رو میذارم واستون 😍\n\n#موجود_در_ایران #آنلاین_شاپ #کیف #پولو #تامی", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/731695512_17895764343517728_2564997084022209850_n.jpg?stp=dst-jpegr_e35_p1080x1080_tt6&_nc_cat=108&ig_cache_key=MzkzNTIzOTMzMDkwMzIzNTcyMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMzA3Mi5oZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=LHdsBZkTyEQQ7kNvwHPuCio&_nc_oc=AdpVX4Okh20QPqz4tzXDP_Ue582NITElQvhklag2aFXkWyV6fBwGw07_jR4DxaqMp5U&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=-1&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQJhcqVsc-WZ7Aai9IQEgJLIaBqjPTcvRxYQNe6-JArCzA&oe=6AB201A1", "url": "https://www.instagram.com/p/Dacx1JYohyK/"}, {"id": "3931945906242346006", "code": "DaRE_gpoFwW", "type": "Reel", "date": "2026-07-02", "time": "02:04", "weekday": "پنج‌شنبه", "hour": 2, "likes": 41, "comments": 0, "plays": 3442, "caption": "انتظارها به پایان رسید 😂\nبالاخره میتونیم از تخفیفای ترکیه هم استفاده کنیم و کلی خرید خوب با هم داشته باشیم 😍💃🏽🛍️\n\n#خرید_از_ترکیه #سفارش_از_ترکیه #🇹🇷 #سفارش_آنلاین", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/734898024_17895020976517728_2000112183769727749_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=106&ig_cache_key=MzkzMTk0NTkwNjI0MjM0NjAwNjE3ODk1MDIwOTczNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMTUuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=8IjLpYHDXeMQ7kNvwG31i2_&_nc_oc=AdpOS2DJ2xLWTbJODayyGGtACJOLHK2w96BXNBV505yCANpH08qBm24I1Mitda-xjLo&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQIs8lH3vbTNJgSWaJUyJpQSyy5N2hDlKBeRVJlTDIc57g&oe=6AB1F335", "url": "https://www.instagram.com/p/DaRE_gpoFwW/"}, {"id": "3930845955647208407", "code": "DaNK5H1IfvX", "type": "Photo", "date": "2026-06-30", "time": "13:31", "weekday": "سه‌شنبه", "hour": 13, "likes": 14, "comments": 0, "plays": 0, "caption": "به مناسبت برگشتمون نمیدونین وارد چه حراج هیجان انگیزی شدیممم 😍 \nحراج آخر فصل نمشی هست و تا ۹۰٪ تخفیف داریم روی یه سری آیتم های مشخص 🤭 اصلا این فرصت رو از دست ندین 💃🏽\n#دبی #خرید_از_دبی #فروش_آنلاین #نمشی #تخفیف_آخر_فصل", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/734958320_17894772744517728_3212133266689384959_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=102&ig_cache_key=MzkzMDg0NTk1NTY0NzIwODQwNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQwMy5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=p7y0W7alisAQ7kNvwFuALt_&_nc_oc=AdoXl6xw6v_tU2jPNxvegLBZhDWOqWl-I7QTL0QrqHnGKg3aDFSRlvg5QWlpQwNZY48&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQKN6uHcN10Vp01iTS2oqghASf2KKLCPDBeX31zdQXbaVg&oe=6AB218B4", "url": "https://www.instagram.com/p/DaNK5H1IfvX/"}, {"id": "3798475603045806449", "code": "DS25W-PiHFx", "type": "Carousel", "date": "2025-12-29", "time": "22:09", "weekday": "دوشنبه", "hour": 22, "likes": 12, "comments": 0, "plays": 0, "caption": "از میزان علاقه‌ام بهش هرچی بگم کم گفتم 🥹\nهم ساده‌ست، هم نیست 🥹\nهم اداییه، هم نیست 🤭\nفوق العاده کاربردیه واسه اکثر استایل ها ✌🏽\nواسه استعلام قیمت و موجودی از طریق واتساپ یا دایرکت به من پیام بدین🥰\n_______________________\n#سرینو #آنلاین_شاپ #sarino #onlineshop #Guess", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/607988915_17868194175517728_6203507687790192187_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=Mzc5ODQ3NTU5MTIzNDY2NTU0OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=k2jfZEEfqIIQ7kNvwFoQLOt&_nc_oc=AdrI6wH3_mpDdMKg3IK6hsepKJgztAlWbHwkhay6qpFObdKfbh8M5gLH3kySYxPCRqg&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQIcGqRx3ul1YjuX7ITXaTrw7RNIQTTtn826ojHU2-545A&oe=6AB1F961", "url": "https://www.instagram.com/p/DS25W-PiHFx/"}, {"id": "3794439774052843293", "code": "DSojt7mCH8d", "type": "Carousel", "date": "2025-12-24", "time": "08:31", "weekday": "چهارشنبه", "hour": 8, "likes": 20, "comments": 0, "plays": 0, "caption": "Tommy Jeans ♥️\nاین کاپشن تامی با اختلاف یکی از جذاب ترین آیتماییه که واسه زمستون میتونی داشته باشی 😍\nشما دیتیل پشت یقشو نگاه کنید آخه 🥹\nواسه استعلام موجودی و قیمت از طریق دایرکت یا واتساپ با من در ارتباط باشین 🙈\n_______________________\n#سرینو #آنلاین_شاپ #تامی_جینز #sarino #کاپشن", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/603886136_17867495748517728_472647421435489403_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=108&ig_cache_key=Mzc5NDQzOTc1NjY4MDAzODEwNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=lBY8qEs9PoEQ7kNvwEpW6u0&_nc_oc=Adpga-yk3HRh_rpOgzrVi8cU5QoXYQIU-RJZDw_Z8H_sniAFRcYXE-uTpGqLxUhh3nA&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQK3eYyMmVS0CB4O_zWCDZNnOw7WxyCTMG-jJR2znP74fQ&oe=6AB1F8C5", "url": "https://www.instagram.com/p/DSojt7mCH8d/"}, {"id": "3930799811793759949", "code": "DaNAZpBI67N", "type": "Reel", "date": "2026-06-30", "time": "11:59", "weekday": "سه‌شنبه", "hour": 11, "likes": 32, "comments": 1, "plays": 1700, "caption": "«دل و دماغ کار کردن نداشتن» رو به معنای واقعی حس کردم این مدت ولی I AM FINALLY BACK 😍💃🏽", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/729589902_17894762016517728_1539814774579940346_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=109&ig_cache_key=MzkzMDc5OTgxMTc5Mzc1OTk0OTE3ODk0NzYyMDEwNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyMTUuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=0yR-rANBqQQQ7kNvwHEGPMN&_nc_oc=Adp6a5d0A0HV92_b35x9cOOx4a1K39pUUXxAN-8UsNydYsU-WTJG9JRtEiJdWWvS5DE&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=xKC8bxk4U8ZzS7sxAWUODw&_nc_ss=7a3ba&oh=00_AQKpR2iYXLvwkHso0Nthe-xgVqqaarmftSxt8niwLT_hvw&oe=6AB21C0C", "url": "https://www.instagram.com/p/DaNAZpBI67N/"}, {"id": "3789763238280356257", "code": "DSX8ZYQiOGh", "type": "Carousel", "date": "2025-12-17", "time": "21:40", "weekday": "چهارشنبه", "hour": 21, "likes": 21, "comments": 1, "plays": 0, "caption": "Lacoste 🐊\nساعت اسپورت با بند سیلیکونی ولی شیک 👌🏽\nسادگی و رنگش بی نظیره ☺️\nقیمتشم خیلی خوب شده 😏\nواسه اطلاع از قیمت و ثبت سفارش دایرکت یا واتساپ بهم پیام بده 📥\n___________________________\n#سرینو #آنلاین_شاپ #ساعت #خرید_از_دبی #سفارش_از_دبی #سفارشی #لاکوست #سورمه‌ای #sarino #onlineshop #watch #dubai #shopping", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/586687193_17866728303517728_7961546892423328110_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=Mzc4OTc2MzIyMTAxNjU1NDAxMw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=RW1gU2-xFBUQ7kNvwGzY_BQ&_nc_oc=AdrQC7uAroW5_SiglbpQguN5NpvEWS9MnLE5k8xfxKr4xy9Bwu5WxptomSPWL8QhrYY&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQIrO_bulzrchZlvMwPwkgK6ueBvkLxnw5Kf_owZgA0Rcg&oe=6AB20A11", "url": "https://www.instagram.com/p/DSX8ZYQiOGh/"}, {"id": "3788832489255482023", "code": "DSUoxMriDKn", "type": "Carousel", "date": "2025-12-16", "time": "14:50", "weekday": "سه‌شنبه", "hour": 14, "likes": 20, "comments": 1, "plays": 0, "caption": "یه کفش خوش قیمت و خوش رنگ و با کیفیت ✌🏽\nکی گفته رنگلر فقط شلوار جیناش خوبه؟ \nبرای استعلام قیمت، سایز و ثبت سفارش از طریق دایرکت یا واتساپ با من در ارتباط باشید 🥰\n_________________________\n#سرینو #آنلاین_شاپ #کفش #رنگلر #کتونی #سفارش_از_دبی #خرید_از_دبی #سفارش_آنلاین #سفارشی #sarino #onlineshop #wrangler #dubai #shopping #sneakers #formen", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/590916740_17866564902517728_7545375932057886254_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=Mzc4ODgzMjQ3NTY2NTk3MjY2OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=zTDG7HGf1SEQ7kNvwEF2mPK&_nc_oc=AdrtzEgZF0D3rB3do6ahWrkB36jLGtnpLa3hs9x3x6WgyzVd2Maiam2-coeFbe-PdIg&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQLTIiuYdF7xwA6x4GkNlHPcHswf_E0sYOWx2PZCgUff9w&oe=6AB21722", "url": "https://www.instagram.com/p/DSUoxMriDKn/"}, {"id": "3790202813410754588", "code": "DSZgWCgCMAc", "type": "Carousel", "date": "2025-12-18", "time": "12:13", "weekday": "پنج‌شنبه", "hour": 12, "likes": 14, "comments": 0, "plays": 0, "caption": "H&M 🫶🏽\nیه بافت خیلی خوشگل از برند اچ اند ام 🙈\nیقشو میتونید به ۲ حالت استایل کنید 😍\nاین مدل هیچوقت از مد نمیوفته و همیشه کاربرد داره 😈\nقیمتشو توی استوری ها میتونید ببینید ✌🏽\nواسه ثبت سفارش و استعلام سایز هم میتونید بهم دایرکت یا واتساپ پیام بدین 🥰\n_______________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #اچ_اند_ام #بافت #سفارشی #sarino #onlineshop #dubai #shopping #knitwear #hm", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/587816472_17866789911517728_1253563744171250519_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=101&ig_cache_key=Mzc5MDIwMjc5OTI1OTE0MTk2MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTM2Ni5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=J-2AKJC2bDUQ7kNvwHCAEmQ&_nc_oc=AdqSVSVypTYun2ilV2VE6GIYAfXk7zMMh767K2LERuur4LOtxcj6PHZKAM694pLHk9o&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQKSD8UWCIrCfF4hBTkfvG6vhAlNQ7u3NFdptrKUocm67A&oe=6AB1FD6B", "url": "https://www.instagram.com/p/DSZgWCgCMAc/"}, {"id": "3790208226092952002", "code": "DSZhkzdCKnC", "type": "Reel", "date": "2025-12-18", "time": "12:29", "weekday": "پنج‌شنبه", "hour": 12, "likes": 151, "comments": 16, "plays": 3082, "caption": "منو ببخش اگه کشیدم رو قلب تو یه خش 💔🫠", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/602851023_17866791072517728_3095212551517415992_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=103&ig_cache_key=Mzc5MDIwODIyNjA5Mjk1MjAwMjE3ODY2NzkxMDY5NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjE4ODAuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=8krugU20MToQ7kNvwEwRI5Q&_nc_oc=AdqKONMrb0wjB-UvCPXWSD0V7aZcMSqXoAyFuR0kk6QPDyHx2NE9r1qJ16KfKP1Ig60&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQLiomcw-UwUOy_xgGA75FkfTF5Dmek6nl8xfF982BGTTQ&oe=6AB22789", "url": "https://www.instagram.com/p/DSZhkzdCKnC/"}, {"id": "3787610907828839105", "code": "DSQTA2UiGLB", "type": "Reel", "date": "2025-12-14", "time": "22:30", "weekday": "یک‌شنبه", "hour": 22, "likes": 154, "comments": 4, "plays": 3172, "caption": "No More Bare Minimum Ladies 💁🏽‍♀️", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.71878-15/601440421_879579964755483_3510446902059813758_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=103&ig_cache_key=Mzc4NzYxMDkwNzgyODgzOTEwNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZGVmYXVsdF9jb3Zlcl9mcmFtZS5DMyJ9&_nc_ohc=I-DkpJF11JIQ7kNvwEqp8ku&_nc_oc=AdpFB14VIH1pbSoIQLNTpeXvXFVmp7J4c6uYfY4lSZ-_J0xCo1DCJMNShmBVtFJKD8M&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQK5vntxOCbh3dr26PH2BST-lIJ-dpZZhgVcipB-eDFc0g&oe=6AB20479", "url": "https://www.instagram.com/p/DSQTA2UiGLB/"}, {"id": "3789755036771816580", "code": "DSX6iCAiBSE", "type": "Photo", "date": "2025-12-17", "time": "21:23", "weekday": "چهارشنبه", "hour": 21, "likes": 9, "comments": 2, "plays": 0, "caption": "پک ضد آفتاب ویچی ☀️\nاگه دنبال یه ضد آفتاب خیلی خوب هستی درست اومدی چون: \n\nاین ضد آفتاب از برند ویچی مناسب پوست نرمال تا خشکه\nSPF 50+ محافظت بسیار بالا در برابر UVA و UVB داره \nبافت مخملی داره که کمک به یکدست‌تر دیده شدن پوست میکنه\nمناسب استفاده روزانه و زیر آرایش هم هست \nواسه استعلام قیمت و ثبت سفارش بهم دایرکت یا واتساپ پیام بده 🥰\n____________________________\n\n#سرینو #آنلاین_شاپ #ضد_آفتاب #ویچی #خرید_از_دبی #سفارش_از_دبی  #sarino #onlineshop #vichy #dubai #shopping", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/590905845_17866725708517728_4719264733934969203_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=102&ig_cache_key=Mzc4OTc1NTAzNjc3MTgxNjU4MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=VaVB8hB2_zEQ7kNvwEjcsQg&_nc_oc=Adrf0x219qCpLCNeLEWWdayI29UtK_cxLGTCrsbu8bnkL8Ro-j3-VeIYJFguvofccLs&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQJaxc1oGTP7j5vEa_2p17_ITWCqfIWMD-v9N6l1x8sF-A&oe=6AB210C6", "url": "https://www.instagram.com/p/DSX6iCAiBSE/"}, {"id": "3787532125512164983", "code": "DSQBGakiGZ3", "type": "Carousel", "date": "2025-12-14", "time": "19:47", "weekday": "یک‌شنبه", "hour": 19, "likes": 10, "comments": 1, "plays": 0, "caption": "آقایون خاص پسند و خوش سلیقه زمستون امسال نباید این جکت جذاب و از دست بدن 🤭\nاز مدلش بگم؟ از رنگش بگم؟ از کیفیتش بگم؟ از چی بگم؟ 🥹\nواسه اطلاع از قیمت و موجودی سایز و ثبت سفارش بهم دایرکت یا واتساپ پیام بدین 🦥\n_________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #آندرآرمر #جکت #کاپشن #sarino #onlineshop #dubai #shopping #online #underarmour #jacket", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/591177273_17866362447517728_5255455937477566813_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=Mzc4NzUzMjExMTY3MTAwMDEyMQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=eNXazQPbOaUQ7kNvwG4Fp9e&_nc_oc=AdqmyWhFEbCWGHQA77i5aS2oy3g7HaPJSZ09xYRdegv7YuBJLF6uwVWjlYPnmSEftio&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQJk9b95RSuE1-kq03V6ObR6t15jci7y3lCc6RtZ-WKCEw&oe=6AB20593", "url": "https://www.instagram.com/p/DSQBGakiGZ3/"}, {"id": "3787515965680946804", "code": "DSP9bQjiI50", "type": "Carousel", "date": "2025-12-14", "time": "19:15", "weekday": "یک‌شنبه", "hour": 19, "likes": 15, "comments": 1, "plays": 0, "caption": "مگه از شلوار جینای زارا بهترم داریم؟😍\nمدل خوشگل ، رنگ جذاب ، کیفیت عالی 🙈\nاگه دوسش داشتی واسه ثبت سفارش بهم دایرکت یا واتساپ پیام بده 🥰\n_______________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارش_آنلاین #زارا #شلوار_جین #sarino #onlineshop #dubai #shopping #zara #jeans", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/589641171_17866362060517728_8124490696766775859_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=Mzc4NzUxNTk0OTQ2NTc4ODMxOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=oaWYsp8US7MQ7kNvwHvzgw0&_nc_oc=AdrEpw6LMF_c4MtfMpRptSG2bpoEPZQdaq908uoWXcc2tX2tBnaxWT2Z9-3t1rKWW0E&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQIvyyLP4Zdmerc-U3Uo1Oq5LwpJ1EXplkR4TAzqwfX56A&oe=6AB1F2DE", "url": "https://www.instagram.com/p/DSP9bQjiI50/"}, {"id": "3771361815033347145", "code": "DRWkZbYiPxJ", "type": "Carousel", "date": "2025-11-22", "time": "12:19", "weekday": "شنبه", "hour": 12, "likes": 16, "comments": 0, "plays": 0, "caption": "Guess 🙈\nیه کتونی گس مردونه جذاب و متفاوت 🥰\nاز سایز ۴۰ تا ۴۶ موجوده و قیمتش خیلی خوب شده 🫠\nاگه دوستش داشتی دایرکت یا واتساپ بهم پیام بده تا راهنماییت کنم 🤩\n_________________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #گس #کتونی #guess #sarino #onlineshop #italy #shopping #sneakers", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/587395030_17863823349517728_4734884298791191835_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=108&ig_cache_key=Mzc3MTM2MTc5ODA3MTU0Njc3Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=Im5L3yHjgZ8Q7kNvwGCNWez&_nc_oc=Adp7wuPZmDpcV06ktoY_XdABekMkg_WIwVlgbo3b_Y5Riw5wxxK3IzNYaQLd-zkHLiE&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQKQQl-g4cg7nZ0uAxDXktPpGufbs9fJztbRna3BbiuTaA&oe=6AB1FE8D", "url": "https://www.instagram.com/p/DRWkZbYiPxJ/"}, {"id": "3785841871038234562", "code": "DSKAx-bCL_C", "type": "Reel", "date": "2025-12-12", "time": "11:52", "weekday": "جمعه", "hour": 11, "likes": 32, "comments": 4, "plays": 924, "caption": "تا آخر ماه پول نداشته باشم اما تورو داشته باشم 🥹💕", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.71878-15/586654546_1329608542513926_708450113576524538_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=100&ig_cache_key=Mzc4NTg0MTg3MTAzODIzNDU2MjgyNTgzMDczMDMyMzIyMw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fbmZyYW1lX2NvdmVyX2ZyYW1lLkMzIn0%3D&_nc_ohc=oIsTB94TI7gQ7kNvwFZ7s6c&_nc_oc=AdrJfJjZAJEkWRK3s1IWm_ybGq6DRxUSJXYkJV6rodKvWnfWgvIjAi_CvggQVPq1yns&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQK8WFtOofs3f8lp9e-1YK5DPI52r4NVrpDb1SSe44gO4A&oe=6AB21126", "url": "https://www.instagram.com/p/DSKAx-bCL_C/"}, {"id": "3771633152234629843", "code": "DRXiF52CCrT", "type": "Carousel", "date": "2025-11-22", "time": "21:18", "weekday": "شنبه", "hour": 21, "likes": 18, "comments": 3, "plays": 0, "caption": "On Running 🏃🏽‍♀️\nهرچی از خوشگلی و خوش رنگی این هودیای آن رانینگ بگم کم گفتم 😍\nهم مردونه داره هم زنونه 🥹\nالانم که قیمتاش خیلی خوب شده 🤩\nواسه ثبت سفارش میتونی بهم توی دایرکت یا واتساپ پیام بدی 🥰\n__________________________\n#سرینو #آنلاین_شاپ #آن #آن_رانینگ #خرید_از_کانادا #سفارش_از_کانادا #خرید_از_ایتالیا #سفارش_از_ایتالیا #هودی #sarino #onlineshop #hoodie #on #onrunning #canada #italy #shopping", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/587525870_17863872264517728_6450276884625585125_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=109&ig_cache_key=Mzc3MTYzMzEzNzM3ODQ1MzY2MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=XcN_9zWkYI4Q7kNvwHmJlWW&_nc_oc=AdqOs1T-8KE-ckA2rt_6Zi2LYA5RiWpo3SuZcaxj2sLlb0BDr1oIWnT4USVFtyUvlcI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQLNKyZzSCrwhuqhECk2oDcY7phs5tMH7R9BazLoIIWi7w&oe=6AB20BD2", "url": "https://www.instagram.com/p/DRXiF52CCrT/"}, {"id": "3777156729243495200", "code": "DRrKAhziOsg", "type": "Reel", "date": "2025-11-30", "time": "12:15", "weekday": "یک‌شنبه", "hour": 12, "likes": 103, "comments": 5, "plays": 2913, "caption": "سفر دوست دارم خب 🫠", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.71878-15/591151530_874627045074259_7505418549410718908_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=108&ig_cache_key=Mzc3NzE1NjcyOTI0MzQ5NTIwMDE5MDc0Mjg1Mzk4NDIzNDE%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fbmZyYW1lX2NvdmVyX2ZyYW1lLkMzIn0%3D&_nc_ohc=52uybln0FYkQ7kNvwEv9t6Q&_nc_oc=Adr7Tk-7jy2jIOLJPlsnn3iUY7cckXfiTEyel9xfsvnkaPKixyDjPpW10rB_RGVRJ6o&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=slP3qEX2iUUuJorjFcg9GQ&_nc_ss=7a3ba&oh=00_AQIwhDe4q-7mN5lEAubVaZm59YMNqZFC_yVn9p_NHfzWIQ&oe=6AB1F9AE", "url": "https://www.instagram.com/p/DRrKAhziOsg/"}, {"id": "3784635237658028381", "code": "DSFubJhCGld", "type": "Carousel", "date": "2025-12-10", "time": "19:51", "weekday": "چهارشنبه", "hour": 19, "likes": 24, "comments": 0, "plays": 0, "caption": "همیشه دوست داشتم یه پاندورا داشته باشم و اطرافیانم واسه هر مناسبتی، چارمشو بهم هدیه بدن 🥹 \nمگه داریم از این خاص تر و جذاب تر؟ ✨\nواسه اطلاع از قیمت و ثبت سفارش بهم دایرکت بده 🥰\n____________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #پاندورا #چارم #دستبند #سفارشی #sarino #onlineshop #dubai #shopping #pandora #bracelet #charm", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/584400922_17865895440517728_8758949846905597701_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=Mzc4NDYzNTIxOTk4MzIxNjY3OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=eeeDwzPRrm0Q7kNvwFutO4U&_nc_oc=Adp0R4OGwpEMt8C6OEplDP2qqx9XPVT-NtOdS7Q9IcLgRJyBhLV1JMuZvNrxIuW5BN_kd_3DRFw-Rgw4StaqNCyj&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQJ-c86J5BOkVmcohntxNwb9oi3Dylev8haOMp2m-pCvSw&oe=6AB22A3E", "url": "https://www.instagram.com/p/DSFubJhCGld/"}, {"id": "3774587972822269618", "code": "DRiB8M9iH6y", "type": "Reel", "date": "2025-11-26", "time": "23:11", "weekday": "چهارشنبه", "hour": 23, "likes": 19, "comments": 3, "plays": 572, "caption": "کیف پاسپورت واسه سفر بعدیت خریدی؟ 🙈", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/586685143_17864326335517728_1396692768971300499_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=101&ig_cache_key=Mzc3NDU4Nzk3MjgyMjI2OTYxODE3ODY0MzI2MzMyNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjMyMTIuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=93mCzU6SmxcQ7kNvwH2KREK&_nc_oc=AdqSGEwcfBhTRlM3UUgPIQ8M_I9Ybrnq8sl3MMrcfvx3rURsHLwneGWLio28ISJa99v53le4f40A380zD9fdV4fh&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQIz2tx8jgR-oNVnsB7pFT6HsqhMHrDj9lxNv290Ccu3OQ&oe=6AB21C44", "url": "https://www.instagram.com/p/DRiB8M9iH6y/"}, {"id": "3766285605559401076", "code": "DREiM26CPp0", "type": "Carousel", "date": "2025-11-15", "time": "12:14", "weekday": "شنبه", "hour": 12, "likes": 11, "comments": 0, "plays": 0, "caption": "Michael Kors 🦋\nهرچی از خوشکلیه رنگش بگم کم گفتم 🥲\nتازه ۲ رو هم هست و کلی میتونه کاربردی باشه واستون چون یک طرفش آبیه و یک طرفش قهوه‌ایه 🩵🐻\nقیمتش عالی شده همه‌ی سایزاش موجوده 😻\nواسه ثبت سفارش بهم دایرکت بده 🥳\n__________________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #کمربند #مایکل_کورس #سفارشی #sarino #onlineshop #italy #shopping #belt #michaelkors", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/582483257_17863077984517728_3130795758170716807_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=110&ig_cache_key=Mzc2NjI4NTU4OTYxMjY0NzUxMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=eJqiLe2_AvMQ7kNvwG_9MeZ&_nc_oc=AdqTFmLlnIY0i9cJnUodbtw-4FpiPrayH1KMh6fhyDC-cnr3E56Ba7LqyFstrwgF0uKQsAvurvBv0Z8UWYU-9lEi&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQKeJ0b_21tHUor1gM8QY-EkM9ogezl0uKOLdYMUFydF8w&oe=6AB1FBFE", "url": "https://www.instagram.com/p/DREiM26CPp0/"}, {"id": "3767719178065702112", "code": "DRJoKFWCGzg", "type": "Reel", "date": "2025-11-17", "time": "11:45", "weekday": "دوشنبه", "hour": 11, "likes": 60, "comments": 5, "plays": 999, "caption": "چی شما رو خوشحال میکنه؟🩷", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/581714004_17863287267517728_3552916070416795319_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=106&ig_cache_key=Mzc2NzcxOTE3ODA2NTcwMjExMjE3ODYzMjg3MjY0NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjIzMDEuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=2sKvlcpiO28Q7kNvwF5rBSR&_nc_oc=AdoGykafLfTJTgm_NopYNmfVb43q7mIN_4Xsvqh1NcmjHqjshIvtArZM1bfd6XI8KVQ8Oqbc8JL9UwG8XefP4aXH&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQK4Iec4kx-BsRyuUSR-Fmp6II_8dKI8QhyYbwwW66jTEw&oe=6AB208B2", "url": "https://www.instagram.com/p/DRJoKFWCGzg/"}, {"id": "3766267466209589210", "code": "DREeE5UiHfa", "type": "Carousel", "date": "2025-11-15", "time": "11:38", "weekday": "شنبه", "hour": 11, "likes": 9, "comments": 0, "plays": 0, "caption": "Guess 🤍\nاین بادی از اون چیزاییه که هیچوقت از خریدش پشیمون نمیشی 😍\nبودنش توی کمد هر دختری جزو واجباته 🙈\nانقدر پر طرفداره که سایزاش تموم میشه و دوباره شارژ میشه با قیمت عالی 🥰\nاگه دوستش داری بهم دایرکت بده تا قیمتشو بهت بدم و واست ثبت سفارش کنم 📥\n_______________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #گس #بادی #سفارش #آنلاین #sarino #onlineshop #dubai #shopping #guess #body", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/583696444_17863075953517728_2537729587300455794_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=100&ig_cache_key=Mzc2NjI2NzQ1MDc3NDU0MDA1Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=iEmyCn-NEIoQ7kNvwHtEpsZ&_nc_oc=AdqEGr-dtlU9jtbeQZmpytuHtr4JPUMJCal36z4l7XibXQMLT8hS7RDmhNQ8zujORFfIGGuu8bV5MFmDrsRxGHG-&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQLugjsZt3Yo2EbmyLt_4a9EW043jTfpJTpiFFF-dZr9MA&oe=6AB20D65", "url": "https://www.instagram.com/p/DREeE5UiHfa/"}, {"id": "3763586484012608038", "code": "DQ68feFCGom", "type": "Carousel", "date": "2025-11-11", "time": "18:51", "weekday": "سه‌شنبه", "hour": 18, "likes": 24, "comments": 1, "plays": 0, "caption": "Tommy Hilfiger 🤌🏽\nیه گزینه خیلی مناسب واسه آقایونی که ساعت با بند چرم دوست دارن 😍\nقیمتش هم خیلی خوب شده 🥰\nواسه استعلام قیمت و موجودی و ثبت سفارش بهم دایرکت بده تا راهنماییت کنم 📥\n______________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #تامی_هیلفیگر #ساعت #کادو #sarino #onlineshop #dubai #shopping #tommyhilfiger #watch", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/580912973_17862687201517728_723057372731411303_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=Mzc2MzU4NjQ3MjYxMjUyNzExMA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=nBGvlsJDxp4Q7kNvwF9eRD9&_nc_oc=AdoFtF4jOq8ZFfLfDKQRuGmDXwESqbmbgRP6nMMlyUTniNXRqRhGp8SWcWOQdp6soyLtlwtd_hH8dKdq_sURAcW9&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQI_YaXbwvrNIrQ_0N5PJnXm72-pkQRqxQqgm4U0-iftsw&oe=6AB1F7C9", "url": "https://www.instagram.com/p/DQ68feFCGom/"}, {"id": "3760451865465638254", "code": "DQvzwxECM1u", "type": "Carousel", "date": "2025-11-07", "time": "11:03", "weekday": "جمعه", "hour": 11, "likes": 18, "comments": 0, "plays": 0, "caption": "GAP 🤭\nکسایی که Moon Boot دوست دارن ولی نمیخوان اونقدر هزینه کنن این بوت گزینه خیلی خوبیه واسشون چون قیمتش بی نظیره و هر چی از خوشکلیش بگم کم گفتم 🫠\nاگه دوسش داشتی واسه ثبت سفارش بهم دایرکت بده 😍\n_________________________\n#سرینو #آنلاین_شاپ #گپ #بوت #نقره‌ای #مون_بوت #خرید_از_دبی #سفارش_از_دبی #سفارشی #sarino #onlineshop #gap #boots #silver #dubai #shopping #moonboot", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/572950955_17862209091517728_4764497267773743683_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=Mzc2MDQ1MTg1MTE4ODIyNTI0NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=h5aZhRw3xigQ7kNvwFLGBnS&_nc_oc=AdqOGMX81Eq-XfXDbl5doEelLHjJaud9INfe6QclC6XZJReeKj1cDgHIY6SndLAJ0Qn8awfpN-0zyWHigQrxJYRM&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQJmasjClYbpsIDS16PFPtVkoQuW-3BEI_jlm8m37WCIZw&oe=6AB203A9", "url": "https://www.instagram.com/p/DQvzwxECM1u/"}, {"id": "3759745722418254145", "code": "DQtTNCGiNFB", "type": "Carousel", "date": "2025-11-06", "time": "11:40", "weekday": "پنج‌شنبه", "hour": 11, "likes": 10, "comments": 3, "plays": 0, "caption": "Michael Kors 🦋\nمایکل کورس روی یه سری از آیتم ها ۱۵٪ اکسترا آف داره و حراجش بی نظیره😍 \nاین فرصت خرید رو نباید از دست بدید 😱\nواسه ثبت سفارش و استعلام موجودی و قیمت بهم دایرکت بدین 📥\nیا اگه آیتمی مد نظرتون هست واسم بفرستین 🥰\n__________________________\n#سرینو #آنلاین_شاپ #مایکل_کورس #کیف #تخفیف #خرید_از_کانادا #سفارش_از_کانادا #sarino #onlineshop #michaelkors #bag #canada #shopping #blackfriday #بلک_فرایدی", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/573191762_17862109515517728_707784722631474807_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=Mzc1OTc0NTcwNTE3OTY0MDUwMA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=KgGz-8l9yGwQ7kNvwGUkB3G&_nc_oc=AdqPL6WXgGk0LGhV84MqOiqgVMIRCR2cG3-PQDgi5qC_zUZzL51itVGUt3E5BNzC8bYpWBY_xNqsBytjkUKCICzR&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQKl1VTCZwqnGWEVw_hBMetbjHzSk202YJ-y0x4yhOR7-Q&oe=6AB21E71", "url": "https://www.instagram.com/p/DQtTNCGiNFB/"}, {"id": "3760540364432738186", "code": "DQwH4mJiAeK", "type": "Reel", "date": "2025-11-07", "time": "14:01", "weekday": "جمعه", "hour": 14, "likes": 117, "comments": 9, "plays": 3149, "caption": "شما به آقایی چی میگین؟ 😂", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/573650573_17862223914517728_128663462934088192_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=102&ig_cache_key=Mzc2MDU0MDM2NDQzMjczODE4NjE3ODYyMjIzOTA4NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzguc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=C9MsNVMeNVUQ7kNvwHzCOEM&_nc_oc=Adq4z_KdygL-HEZZ831zbPnIsAohvbjvC10s0HeMraCVczt8jIlJxYAZppxHS3DnC28HAgb7_pD9V5DUddMK7SfL&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQKWJI4QL17sW1bW0709Q3D1v3Gc39H_3Cb_n4W-lHJPwg&oe=6AB1F764", "url": "https://www.instagram.com/p/DQwH4mJiAeK/"}, {"id": "3759003800254868445", "code": "DQqqgpPiOvd", "type": "Carousel", "date": "2025-11-05", "time": "11:06", "weekday": "چهارشنبه", "hour": 11, "likes": 9, "comments": 0, "plays": 0, "caption": "Nike 🥵\nآقایون میتونن با این کاپشن نایک استایل زمستونشونو جمع کنن به نظرم انقدر که جذابه 🤌🏽\nگرم، سنگین، خوش رنگ و کاربردی، آیتمی که سال ها میتونه واستون کارایی داشته باشه 🥹\nواسه استعلام قیمت، موجودی و سایز بهم دایرکت بدین تا راهنماییتون کنم 🥰\n_______________________\n\n#سرینو #آنلاین_شاپ #نایک #کاپشن #خرید_از_دبی #سفارش_از_دبی #سفارشی #sarino #onlineshop #nike #jacket #hoodie #dubai #shopping", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/572522968_17861998251517728_7595106670824140270_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzc1OTAwMzc3NzU3MjA2NTA5NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=TGRxJdNr-vcQ7kNvwGaLx7l&_nc_oc=Adple7yNusaubtEt2oMbmOlK49HXaY_BBHwRCt_2ZDmwBk9hXk7XIYuuBlGOILId7PE2vWk9bYgOzcK-A4kxzEgM&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQJHyJlDbcknvlmr_5SGSBcuSEUjWivekIbyKAxeWODTiA&oe=6AB21CD3", "url": "https://www.instagram.com/p/DQqqgpPiOvd/"}, {"id": "3757233387489230280", "code": "DQkX9v3iH3I", "type": "Reel", "date": "2025-11-03", "time": "08:19", "weekday": "دوشنبه", "hour": 8, "likes": 38, "comments": 2, "plays": 1504, "caption": "ببینید چی موجود کردم واستون 😍\nیه آیتم فوق العاده مخصوصا واسه کادو ✨\nهم باکس داره هم جمع و جوره و قیمتش مناسبه 🤩", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/573044184_17861777118517728_8198669624275474569_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=104&ig_cache_key=Mzc1NzIzMzM4NzQ4OTIzMDI4MDE3ODYxNzc3MTEyNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjIzMDEuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=3nYGYynzyOgQ7kNvwE22eYF&_nc_oc=AdrqhC1_GKJ62KFd9uXkotLgA3prROl7i0Wbpe2RMQVDMOlbtX7XuGRy0bSgXJmfZa9Vb9s1v0qDFvxReLapFKa_&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQLscPmTQ-ZavbyHivm6xz_Sqg-q2_yFAZrxfTZCJUp9Jg&oe=6AB2098C", "url": "https://www.instagram.com/p/DQkX9v3iH3I/"}, {"id": "3757125223586498963", "code": "DQj_XwYiImT", "type": "Carousel", "date": "2025-11-02", "time": "20:54", "weekday": "یک‌شنبه", "hour": 20, "likes": 11, "comments": 0, "plays": 0, "caption": "Kiko Milano 💄\nبه سِت جذاب دیگه از کیکو میلانو با یه قیمت فوق العاده 😍\nیعنی شما اگه هر کدوم از آیتم های این سِت رو بخواین جدا بگیرید قیمتش خیلی بیشتر میشه 🫣\nواسه خریدش شک نکن و سریع تر سفارشتو ثبت کن 🙈\n_________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #کیکومیلانو #لوازم_آرایش #سفارشی #sarino #onlineshop #dubai #shopping #kikomilano #beautyset", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/571030173_17861727897517728_8823378889968192150_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=110&ig_cache_key=Mzc1NzEyNTIwNjc5MjUzNDAxNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=S43pQVOct0MQ7kNvwHw5E_W&_nc_oc=AdpRFisqn02_j9-IrAJsbX4CbsbdkB4crDDdSw_TM6ExZzhddEGlC0rjFgBFIBKv2tTPdJQ9GMUx5eyvU8lJ8WXm&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=BzwbcUKShCEY29gesUu-xA&_nc_ss=7a3ba&oh=00_AQJ61B2XjBOWl4NC7cKcq8Xb9bAwTC6xLVyrY2rgMKB28A&oe=6AB20D95", "url": "https://www.instagram.com/p/DQj_XwYiImT/"}, {"id": "3754712359588340802", "code": "DQbav9rCCRC", "type": "Reel", "date": "2025-10-30", "time": "13:04", "weekday": "پنج‌شنبه", "hour": 13, "likes": 36, "comments": 1, "plays": 1390, "caption": "اين كفش از برند Guess موجود در ايران 😍\nفقط كافيه واسه ثبت سفارش بهم دايركت بدى چون ما هرچی كفش\nداشته باشيم بازم كمه 🙈", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/569418122_17861347701517728_696192145670459060_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=105&ig_cache_key=Mzc1NDcxMjM1OTU4ODM0MDgwMjE3ODYxMzQ3Njk4NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjIzMDQuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=qkiT1qsCmNkQ7kNvwHlt4z_&_nc_oc=AdreP21G31E9DgV_60lNjT0BCrXzX8B8AqqW1vqp0nN5RSyMKzfryB-OJvFxAK1KuIux8vUf7FXhXGN-JK-xG0Xx&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQLsFnyYGtZMCYI94avX0sN59wj_dIPXMiOavPjQQgfl9g&oe=6AB221E9", "url": "https://www.instagram.com/p/DQbav9rCCRC/"}, {"id": "3754705351451645886", "code": "DQbZJ-1iJe-", "type": "Carousel", "date": "2025-10-30", "time": "12:46", "weekday": "پنج‌شنبه", "hour": 12, "likes": 12, "comments": 0, "plays": 0, "caption": "Tommy Hilfiger ♥️\nدُرسی که امسال باید تو کمدتون داشته باشین 😍\nمن که خیلی دوستش داشتم، شما چی؟ 😎\nقیمتش خیلی خوب شده، خیلی سریع هم بدستتون میرسه 🤩\nواسه استعلام قیمت، سایز و موجودی بهم دایرکت بده تا دیر نشده 🥸\n___________________________\n\n#سرینو #آنلاین_شاپ #تامی_هیلفیگر #دُرس #سفید #خرید_از_دبی #سفارش_از_دبی #هودی #sarino #onlineshop #sweatshirt #tommyhilfiger #white #dubai #shopping", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/572161275_17861346168517728_1847106743679807435_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=Mzc1NDcwNTMzMTQ2MTYwNjU1Mw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=_QiIlgWfyEcQ7kNvwGCg6Gi&_nc_oc=AdpL8JGzkl0wHTR_kB1O0LHM2L4JdQYNuCEN90XzxgWacGqtvd90qaZx24oSr7aFnFFec7QtoiPSk3fqkLkbcKEy&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQK6SYAaIp6y_iY4j7dWFnK3Tn8op3loRl7vApnAsBk7xA&oe=6AB223CC", "url": "https://www.instagram.com/p/DQbZJ-1iJe-/"}, {"id": "3754030105627241108", "code": "DQY_n3KCKqU", "type": "Carousel", "date": "2025-10-29", "time": "14:24", "weekday": "چهارشنبه", "hour": 14, "likes": 16, "comments": 1, "plays": 0, "caption": "Tommy Hilfiger 🧡\nاین کیف رو با این قیمت هیچ جا پیدا نمیکنی 😍\nهر چی از سایزش، مدلش، رنگش بگم کم گفتم 🥹\nواسه استعلام قیمت، موجودی و ثبت سفارش بهم دایرکت بده 🤩\n__________________________\n\n#سرینو #آنلاین_شاپ #کیف #تامی_هیلفیگر #نارنجی #خرید_از_دبی #سفارش_از_دبی #سفارش #sarino #onlineshop #orange #totebag #tommyhilfiger #dubai #shopping", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/572767101_17861243373517728_8565593431876821671_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=109&ig_cache_key=Mzc1NDAzMDA4NTMxODM5Nzc0Mg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=S22ayRxEilcQ7kNvwG-DZgL&_nc_oc=AdqwmSu-t5RzDRVkxIYDTEzA_aLjZzrDGdsRtwyMN-GwyKmPvIk39C_DqgyKxbtDsqq4aCTPH2iTS5WCM0YqgX_i&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQLO2cCZin2NQDDiIVtxCQ3zvzm8ZPTVIKXkPceUtoT81Q&oe=6AB1FA89", "url": "https://www.instagram.com/p/DQY_n3KCKqU/"}, {"id": "3752891934159934691", "code": "DQU81SYCBTj", "type": "Carousel", "date": "2025-10-28", "time": "00:43", "weekday": "سه‌شنبه", "hour": 0, "likes": 22, "comments": 2, "plays": 0, "caption": "Lacoste 🐊\nفکر کنم اگه این ساعت و رو دست هرکسی ببینم زل بزنم بهش انقدر که رنگ رنگیاشو دوست دارم 🥹\nاگه تو هم مثل من دوستش داشتی میتونی قیمتشو تو دایرکت ازم بپرسی و ثبت سفارشتو هم همونجا انجام بدی 🙈\n__________________________\n\n#سرینو #آنلاین_شاپ #لاگوست‌ #خرید_از_دبی #سفارش_از_دبی #ساعت #لاکوست #sarino #onlineshop #dubai #shopping #lacoste #watxh", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/573070157_17861081472517728_545217355493478025_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=Mzc1Mjg5MTkxOTg2NTgwMzMyOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=_WEjFmKlCOUQ7kNvwHJud6x&_nc_oc=AdrNO0fOxel3q-wpdhcKmV1TWwIdvBS6r2wAec0c3_7KsGtHPDx7dqVu448cybvw7dNhCmDLPPdYmDFKlhzTflCi&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQI-Zq9fV2QnwTzdyPeg2dPZ6kt5V-fkNPIXi6BdbOGX2Q&oe=6AB1F4BF", "url": "https://www.instagram.com/p/DQU81SYCBTj/"}, {"id": "3752441341440220091", "code": "DQTWYTNCNu7", "type": "Carousel", "date": "2025-10-27", "time": "09:48", "weekday": "دوشنبه", "hour": 9, "likes": 25, "comments": 0, "plays": 0, "caption": "Calvin Klein 🤎\nمن عاشق ترکیب رنگ مشکی و قهوه‌ایم ولی به شرطی که درست اجرا بشه مثل این کفش 🤌🏽\nآقایونی که دنبال کتونی مشکی هستین به نظرم این میتونه گزینه اولتون باشه🙈 \nقیمتشو توی استوری یا هایلایت پیج میتونید ببینید 🥰\nواسه ثبت سفارش یا استعلام موجودی بهم دایرکت بدین 📥\n__________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارش #کلوین_کلین #کلوین_کلاین #کتونی #مشکی #sarino #onlineshop #ck #calvinklein #dubai #shopping #sneakers", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/570738528_17861008113517728_1676347845647189017_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&ig_cache_key=Mzc1MjQ0MTMzMDM2NzIwOTE1NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=0s9S8s7SEZIQ7kNvwG_PLIP&_nc_oc=AdqFrMFSqDeOB2rtb-R9j3ikREKFe0kJ3R4uo31jsa6dkeyt3-xb2n0MXxgUsl6OgenZFf6jJ3RLsZRLBJz3szPc&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQJZqfj-70G39iPAyqh7y0FjstkCg1M1jpSIjDK7x2Ku-Q&oe=6AB20167", "url": "https://www.instagram.com/p/DQTWYTNCNu7/"}, {"id": "3750356886479212748", "code": "DQL8bfPiJDM", "type": "Reel", "date": "2025-10-24", "time": "12:50", "weekday": "جمعه", "hour": 12, "likes": 129, "comments": 4, "plays": 4179, "caption": "⁨\tپیج منو فالو کن تا از تخفیفا و آیتم های هیجان انگیز جا نمونی 🙈\nچون من همیشه حواسم به شما، سفارشاتون و تخفیفا هست 😍⁩", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/569189593_17860678308517728_2918637765808116807_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=103&ig_cache_key=Mzc1MDM1Njg4NjQ3OTIxMjc0ODE3ODYwNjc4MzA1NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzguc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=XaB5qavgOLkQ7kNvwHI23Yf&_nc_oc=AdqipcJ3rjhV-yXQk_VyYiZqXAGcNK2hV-xgfsuS3X2XXKgX65QT8mfxYRaoNh6w9UqjCDh-akzqsiNDCNFp-Rz1&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQKLLt1v49i5t1Ks94nslP2s10rMLVGnbSluDWswwMtZEA&oe=6AB20496", "url": "https://www.instagram.com/p/DQL8bfPiJDM/"}, {"id": "3749975648480274906", "code": "DQKlvvsCCna", "type": "Carousel", "date": "2025-10-24", "time": "00:09", "weekday": "جمعه", "hour": 0, "likes": 106, "comments": 17, "plays": 0, "caption": "Calvin Klein 🖤\nفصل فصلِ کلاه هست و این مدل کلاه ها هم که حسابی پر استفاده هستن هم واسه خانوما هم واسه آقایون 🙈\nقیمتشو توی استوری میتونید ببینید ولی همیشه قبل از ثبت سفارش مجدد از من قیمت بگیرید 🥰\nتوی دایرکت من همه‌ی سوالاتتونو جواب میدم 🤭\n____________________________\n\n#سرینو #آنلاین_شاپ #کلاه #بافت #کلوین_کلین #کلوین_کلاین #مشکی #خرید_از_ایتالیا #سفارش_از_ایتالیا #sarino #onlineshop #ck #calvinklein #hat #knit #black #italy #shopping", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/569562704_17860629615517728_5780573635802379198_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=Mzc0OTk3NTYyODIyMTc5OTQ5MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=5BdaN-9YqwAQ7kNvwF0fmfQ&_nc_oc=AdrGJPFQ_GrW3bQvpCtUciKKfGApnT4txJbwXQlaF7FaFmNbM8aW_RV0QYlxNTJehE7oKHP5qjZm9OCpcyI4ndPQ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQL6iGziymf8Qsqc0TmLAmAaoUU3PrBgpIwEP6XrJi9TdA&oe=6AB21E25", "url": "https://www.instagram.com/p/DQKlvvsCCna/"}, {"id": "3747447499599971785", "code": "DQBm6VkFQXJ", "type": "Carousel", "date": "2025-10-20", "time": "12:26", "weekday": "دوشنبه", "hour": 12, "likes": 82, "comments": 1, "plays": 0, "caption": "Nike 🫐\nهرچى از خوشكليش بگم كم گفتم 🥹\nويديوشو اسلايد آخر گذاشتم حتما ببينش💙\nقيمتشم استورى كردم واست 🙈\nتنها كارى كه بايد بكنى اينه كه توى دايركت سفارشتو ثبت کنی 📥\n__________________________\n\n#سرينو #آنلاين_شاپ #نایک #نايكى #خريد_از_دبى #سفارش_از_دبى\nsarino #onlineshop #dubai #shopping #nike #jacket# سفارش#", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/566858021_17860234494517728_5240070593831102106_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=Mzc0NzQ0NzQ4ODgwMzg2NDczNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=rWzM45gQv6kQ7kNvwFG6u1O&_nc_oc=Adpe4m0eDlksbDosRI73sMxRl1v4Pft4rcGwGoCP1Y1XigzETVfDfOM_txoYX8hxCBMCHXnW_akejv_RA0ow1qmh&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQIRgt5Rmq-BuuTYJcIslmT72s__MazLXf9IT8lJVdGZUQ&oe=6AB212C9", "url": "https://www.instagram.com/p/DQBm6VkFQXJ/"}, {"id": "3747445300836816113", "code": "DQBmaVzldTx", "type": "Carousel", "date": "2025-10-20", "time": "12:21", "weekday": "دوشنبه", "hour": 12, "likes": 77, "comments": 9, "plays": 0, "caption": "Tommy Hilfiger 🍎\nرنگش و استایلش کاملا نشون دهنده‌ی برندشه 😍\nمیتونه خیلی کاربردی و شیک باشه واسه آقایون 🤌🏽\nواسه استعلام قیمت و موجودی ، همچنین ثبت سفارش، از طریق دایرکت با من در ارتباط باشین 🙊\n___________________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #کفش #کتونی #تامی_هیلفیگر  #سفارشی #sarino #onlineshop #tommyhilfiger #italy #shopping #orderonline #sneakers", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/567520158_17860234119517728_1977264371604525907_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=103&ig_cache_key=Mzc0NzQ0NTI5NDg4MDg3NTIyNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=ch0mzHhH3HwQ7kNvwFP8nG2&_nc_oc=AdrH1-1yT68IQunKbsCP1gU1D-iLfM4C1Mm9rtfShuKbEroZyQcvxoJMsRHaMAQ6bpKFm_1_910uxbEqJAVQ6vXk&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQLEb6PC4KBpqiDlKS9m1yIHs2f5YmGkRH2MvXToOuDmoQ&oe=6AB2191E", "url": "https://www.instagram.com/p/DQBmaVzldTx/"}, {"id": "3745350924156546276", "code": "DP6KNJhiCzk", "type": "Reel", "date": "2025-10-17", "time": "15:04", "weekday": "جمعه", "hour": 15, "likes": 437, "comments": 1, "plays": 14073, "caption": "⁨\tخرید همیشه جزو اولویت های هر دختریه اونم تو هر شرایطی، مگه نه؟ 🤭⁩", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/567050995_17859906681517728_3592166024023305698_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=109&ig_cache_key=Mzc0NTM1MDkyNDE1NjU0NjI3NjE3ODU5OTA2Njc1NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjIxNTguc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=WhX6D7n4l9AQ7kNvwFMxZjA&_nc_oc=AdrNr3V6jWGVhwRk59LK4RpoqxjYaiOHvMJY7ONDF9sgGU_Fe11esDKCAIBM80O20hTWq4LjePDS4DXlgn7GlHG7&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQKxLF9uzmVE9VuqjsWEgdsSuuHSaPfqZwZTdhFKfuK_bg&oe=6AB22740", "url": "https://www.instagram.com/p/DP6KNJhiCzk/"}, {"id": "3744889726315266988", "code": "DP4hV1kCAOs", "type": "Carousel", "date": "2025-10-16", "time": "23:44", "weekday": "پنج‌شنبه", "hour": 23, "likes": 65, "comments": 15, "plays": 0, "caption": "Ted Baker 🖤\nبه شخصه همیشه به این کیف به عنوان یه گزینه واسه داشتن کیف مشکی نگاه می‌کنم 🫠 \nهم خوشکله هم نُقلیه هم کاربردیه 🥹\nتازه جزو برندایی هم هست که دست هر کسی نمیبینی 😍\nاگه دوستش داشتی از طریق دایرکت میتونی سفارشش‌ بدی 🤍\n_________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارش_آنلاین #کیف #تدبیکر #مشکی #sarino #onlineshop #shopping #dubai #bag #crossbodybag #tedbaker", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.82787-15/566152812_17859848718517728_2271584395728096131_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&ig_cache_key=Mzc0NDg4OTcwNTc0NjQzMTkwOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=sMCEmMIYctYQ7kNvwEQut2_&_nc_oc=AdocgLIO0HNn3sruhf_14c2BHTEw3kx2389vK--PeF9Mw0VgHymV-FGRThR9hi1dWazj73FdU5-sRjAudXPeKcDu&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQKGHIfd6O2Ed9HMyRgD3gKFZ-xiiaBv9TJ9X00_iPlUuA&oe=6AB2112B", "url": "https://www.instagram.com/p/DP4hV1kCAOs/"}, {"id": "3743425000506972102", "code": "DPzUTRWiNfG", "type": "Reel", "date": "2025-10-14", "time": "23:20", "weekday": "سه‌شنبه", "hour": 23, "likes": 92, "comments": 4, "plays": 3993, "caption": "شما جزو کدوم دسته‌این؟ 🫠\nتو رو خدا اولی باشین 😂", "thumbnail": "https://scontent-hel3-1.cdninstagram.com/v/t51.71878-15/563464595_1299962055479510_3772161965498896839_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=106&ig_cache_key=Mzc0MzQyNTAwMDUwNjk3MjEwMg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZGVmYXVsdF9jb3Zlcl9mcmFtZS5DMyJ9&_nc_ohc=bXrd7GnoqKIQ7kNvwHF5QXD&_nc_oc=Adrc1RppDCxQglxO684t3U9nf1J-EjFswPzy6x2-eGCMuuAww9Ib6WJr4DFOqcByJsMkVomS4SNxqxFpHXbwSJef&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-hel3-1.cdninstagram.com&_nc_gid=Ta0V82imbWvKAsmoY6HepA&_nc_ss=7a3ba&oh=00_AQJzfp2HmCSR23rxzIiy7uwr0NKMa0cx8QWLrs-OzHFDTg&oe=6AB22688", "url": "https://www.instagram.com/p/DPzUTRWiNfG/"}, {"id": "3743424310049013304", "code": "DPzUJOUCH44", "type": "Photo", "date": "2025-10-14", "time": "23:12", "weekday": "سه‌شنبه", "hour": 23, "likes": 50, "comments": 3, "plays": 0, "caption": "Marc Jacobs 🌸\nاگه تا الان نمیدونستین بهتون بگم که شما عطر، گیفت ست، ست های ارایشی، پوستی یا هر چیزی که بخواین رو میتونید به من سفارش بدین 🙆🏽‍♀️\nقیمت و مشخصات کامل این ست جذاب رو توی استوری گذاشتم واستون 🥰\nواسه ثبت سفارش از طریق دایرکت با من در ارتباط باشید 😍\n______________________\n#سرینو #آنلاین_شاپ #عطر #مارک_جیکوبز #گیفت #گیفت_ست #لوسیون #خرید_از_ایتالیا #سفارش_از_ایتالیا #sarino #onlineshop #italy #shopping #marcjacobs #giftset", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/563643830_17859633033517728_5999728057070371987_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=104&ig_cache_key=Mzc0MzQyNDMxMDA0OTAxMzMwNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=xmU8CNU1ZSMQ7kNvwF55X9E&_nc_oc=Adoh_rUox9WW3RWl2NSFtNG2Ljl546Ik01rOBM6NuWhKP-A2jfUw49MDu12aJMzPrXpcnm6oUAVwa_8TXZLv9m-1&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQKkyRo6UtkeIwW_6fGG0ICh5PuGm9SuMA_syPoe6SQ25Q&oe=6AB20FEA", "url": "https://www.instagram.com/p/DPzUJOUCH44/"}, {"id": "3740965612651927420", "code": "DPqlGd7Edd8", "type": "Carousel", "date": "2025-10-11", "time": "13:47", "weekday": "شنبه", "hour": 13, "likes": 39, "comments": 1, "plays": 0, "caption": "Guess 🫶🏽\nمن که میخوام بخرمش فقط امیدوارم بهم بیاد 🤭\nترکیب رنگش و مدلش واقعا دوست داشتنیه 😍\nاستوریارو نگاه کنید چون میتونید با آیتم های دیگه هم راحت سِتِش کنید 🥳\nواسه ثبت سفارش بهم دایرکت بدین 📥\n______________________\n#سرینو #آنلاین_شاپ #خرید_از_کانادا #سفارش_از_کانادا #سفارش #کلاه #گس #تخفیف #sarino #onlineshop #canada #shopping #hat #guess", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/562720995_17859242490517728_6457156897691511539_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=Mzc0MDk2NTYwNjEwMDQxMDY5Mg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=_kQDoyV9mPsQ7kNvwFUAWYd&_nc_oc=Adof0UTlw_SR69i8z1E8Hn11pXFUmTE3icRx4XPx1cqPt1yv4HMMYHUA4KtzTViB8qO6YJVRBlFZ6cdaYXic_Ir_&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQINXrK-6m9JBGUGLOYRE8lfoypNn9y63oT3jSLLq_0pqw&oe=6AB202C0", "url": "https://www.instagram.com/p/DPqlGd7Edd8/"}, {"id": "3738029417759254158", "code": "DPgJfNVgCaO", "type": "Carousel", "date": "2025-10-07", "time": "12:34", "weekday": "سه‌شنبه", "hour": 12, "likes": 46, "comments": 3, "plays": 0, "caption": "Guess 🤍\nیه تیشرت جذاب و خوشگل با تنوع رنگ بالا و قیمت مناسب 😍\nچی میخواین دیگه؟ 🥹\nقیمت و موجودی سایزشو توی استوری ها میتونید ببینید 🤩\nتنخورشو هم میذارم واستون 🙈\nواسه ثبت سفارش بهم دایرکت بده 📥\n__________________________\n#سرینو #آنلاین_شاپ #سفارش_از_کانادا #خرید_از_کانادا #سفارشی #تیشرت #گس #sarino #onlineshop #canada #shopping #tshirt #guess", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/560398215_17858791401517728_501723674735169702_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzczODAyOTM5MDg1NzAwNTk3OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuODAwLnNkci5yZWd1bGFyX3Bob3RvLkMzIn0%3D&_nc_ohc=eS-DLCHxsvkQ7kNvwHlVI01&_nc_oc=AdqXVPDYDoyNUXSY0zPy4Wx-k_nrBMk7ynj_1xNq4EA94iwCAIqBSK9n4uMXrIWWxEjuc-4IPs1J66Ine_QE4pgr&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=8&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQLo5wQ4PgUqTuR96CEfy4CQgqvknTU9TQU6nzbhIeKwZQ&oe=6AB216EE", "url": "https://www.instagram.com/p/DPgJfNVgCaO/"}, {"id": "3737313305665487353", "code": "DPdmqZ-iEH5", "type": "Reel", "date": "2025-10-06", "time": "12:53", "weekday": "دوشنبه", "hour": 12, "likes": 389, "comments": 14, "plays": 8605, "caption": "حالا شده کفش با سایز اشتباه سفارش بدی؟ 🧐\nاگه اره، بهت اطمینان میدم که بعد از این ویدیو دیگه این اتفاق واست نمیوفته🤩", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/560786309_17858677809517728_8208631755583001914_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=103&ig_cache_key=MzczNzMxMzMwNTY2NTQ4NzM1MzE3ODU4Njc3ODAzNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzguc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=21Uxbe9Wv64Q7kNvwFSgCMX&_nc_oc=AdoZ9FouLt0Q07pueRu7c-mi-iZfEZi83drv4AkB27qgqEHwJvmSXL0GiQa1rxsKvOdnCsw3qwt8Vm8wnxm1OAHo&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQLsAfG1NSC_AEj9At5yWIL-4upqcMOHNixj4ayvShZ4mA&oe=6AB21FBA", "url": "https://www.instagram.com/p/DPdmqZ-iEH5/"}, {"id": "3737293853582863354", "code": "DPdiPV0Dqv6", "type": "Carousel", "date": "2025-10-06", "time": "12:12", "weekday": "دوشنبه", "hour": 12, "likes": 45, "comments": 17, "plays": 0, "caption": "Guess 🥥\nعاشقش شدم 🥹\nخیلی خوشگل و متفاوته 🦦\nاین مدل زبانه کفش هم که ترنده 🥳\nقیمتش خیلی خوب شده و سفارش از دبی هست و خیلی سریع به دستتون میرسه 😍\n_________________________\n#سرینو #آنلاین_شاپ #دبی #خرید_از_دبی #سفارش_از_دبی #گس #کتونی #کفش #sarino #onlineshop #dubai #shopping #guess #sneakers", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/559849876_17858675190517728_5331777088121541238_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=110&ig_cache_key=MzczNzI5Mzg0MzczNDY1MTQyNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=bOvk25AHEvIQ7kNvwER0MMp&_nc_oc=AdrdBYpY0PTaqxEt60TkTQljo3gWW0tGZsUFBMPzpgn8Qe5iBF8VlGbfEeRdA3Ifp70jOmDZ-Ix-7qw7NGGY3_gB&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQK1lZXpBkbxmskVUvKTZE4LnhSyg9gA41I_WcF-jhy7EA&oe=6AB2077F", "url": "https://www.instagram.com/p/DPdiPV0Dqv6/"}, {"id": "3737273987371011358", "code": "DPdduP9jo0e", "type": "Carousel", "date": "2025-10-06", "time": "11:33", "weekday": "دوشنبه", "hour": 11, "likes": 38, "comments": 5, "plays": 0, "caption": "Guess 🤍\nبر خلاف سایزش به نظر خیلی جادار میاد 🤌🏽\nرنگشم که خیلی کاربردیه مخصوصا واسه استایلای روزمره 🥹\nقیمتش عالیییی شده 😍\nواسه استعلام قیمت و ثبت سفارش بهم دایرکت بده تا راهنماییت کنم 🦦\n______________________________\n#سرینو #آنلاین_شاپ #خرید_از_کانادا #سفارش_از_کانادا #گس #کیف #سفارش_آنلاین #sarino #onlineshop #guess #bag #crossbodybag #canada #shopping", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/559569768_17858672004517728_5962492853500572765_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=MzczNzI3Mzk3OTA5MTQ4MDk0Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=oCRXzOBm5loQ7kNvwHXXPKJ&_nc_oc=AdqBdH_gSnuD6Yuw3O1HsUjMuWnDtCSTnf2a9y6Fxwov_vNE8U6_G6t_qaAksDwRo-Ed5g-2wP1Ls6kEC4KAPwtM&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQItymK7Bs4OS-HGMmnmNZXd4U82jHhNdb3F4dLJ7q7pog&oe=6AB1FF8D", "url": "https://www.instagram.com/p/DPdduP9jo0e/"}, {"id": "3736965217767674694", "code": "DPcXhD3CFNG", "type": "Carousel", "date": "2025-10-06", "time": "01:19", "weekday": "دوشنبه", "hour": 1, "likes": 34, "comments": 4, "plays": 0, "caption": "H&M 🦋\nآقایون محترم؛ به نظرم که این آیتم واسه پاییز و زمستون، لازمتون میشه \nحالا دیگه خود دانین 🙄\nاز خوش رنگیش که نگم براتون، کاربردی بودن و گرم بودنشم که مشخصه نیازی به گفتن نداره 🤐\nولی بازم اگه نیاز به راهنمایی داشتین من دایرکت در خدمتتون هستم 😌\n_____________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #اچ_اند_ام #sarino #onlineshop #dubai #shopping #hm", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/559087661_17858629605517728_256160706755077629_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=110&ig_cache_key=MzczNjk2NTE5NDA3ODI4ODc4OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=JQozo559gwAQ7kNvwGAi2Cr&_nc_oc=AdpSUrQYRYjYa8kwdu1CFelIcof_wnHeAKEKm1bWp5GPIghuQ3E-yEjCmDMHWNyfwkkOre1HzLAat8TciTg2gkYs&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQJ7_XvXg2W3TUjOVKOv6rUMN3TdtfwjMnTma6V1WtKCFQ&oe=6AB21911", "url": "https://www.instagram.com/p/DPcXhD3CFNG/"}, {"id": "3735879408469720419", "code": "DPYgodJiL1j", "type": "Reel", "date": "2025-10-04", "time": "13:28", "weekday": "شنبه", "hour": 13, "likes": 104, "comments": 2, "plays": 4888, "caption": "با احترام فراوان به خانواده محترم و دوست‌داشتنیم ولی اگه مامانم همچین چیزی بهتون گفت باور نکنید 😂😂\nگل برای گل 🌸\nمرسی اه 🫣", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/558651428_17858449026517728_5723112616951132120_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=102&ig_cache_key=MzczNTg3OTQwODQ2OTcyMDQxOTE3ODU4NDQ5MDIwNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjEyOTguc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=Ghd0Gzu4MUAQ7kNvwENN0pG&_nc_oc=AdpnMgQK5zrHtwzF4vK2Vvi6HL9yIDqfR7Nn4RrKtlJvMHjyWBc4SNEn1rYmnQ6xW9nvbZBv5mPyX6VsvthDlZiT&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQKTYfgKJEryA8O97MrJDNggCSzEmxh0M40PY6q-EwIoEA&oe=6AB1F8DA", "url": "https://www.instagram.com/p/DPYgodJiL1j/"}, {"id": "3735878857061366401", "code": "DPYggbnCPqB", "type": "Carousel", "date": "2025-10-04", "time": "13:21", "weekday": "شنبه", "hour": 13, "likes": 47, "comments": 3, "plays": 0, "caption": "Karl Lagerfeld 😎\nحیف که هر مدل عینکی بهم نمیاد وگرنه همه‌ی این عینکارو میخریدم 😞\nخیلی خوشگل و متفاوته هم فریمش هم شیشه‌اش 🫠\nاگه دوستش داشتی بهم دایرکت بده تا قیمتشو بهت بگم 🥰\n___________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارش_آنلاین #کارل_لاگِرفِلد #عینک #sarino #onlineshop #dubai #shopping #karllagerfeld #sunglasses", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/559454117_17858448408517728_8403812436869216159_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzczNTg3ODg0MzE0NDYyNjI5Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=7sDfgBe_wBoQ7kNvwGba22k&_nc_oc=Adp3ZYn3RW3Cj8mSXJPkZ07BGDikbivDjb4gyM93lLHRK9jK3NC7d5JYbTutrY4iCTzxk0rs8orFhqOgHY5zQLOd&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQI2ZcatF8LhWBWs2wr-Hqw8-8DsUuPi-GNEZhJYxJ9PqA&oe=6AB1FE1A", "url": "https://www.instagram.com/p/DPYggbnCPqB/"}, {"id": "3735858748989116581", "code": "DPYb70giBCl", "type": "Carousel", "date": "2025-10-04", "time": "12:41", "weekday": "شنبه", "hour": 12, "likes": 39, "comments": 2, "plays": 0, "caption": "Guess 🤎\nخوش رنگ و کاربردی واسه استفاده روزانه و مهمونی 🥰\nابعادش ۲۰ در ۱۵ هست 🥹\nخلاصه که بهش فکر کنید چون خیلی خوشگل و جاداره 🦦\nواسه استعلام قیمت و ثبت سفارش بهم دایرکت بدین 😎\n____________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارشی #کیف #کراس_بادی #گس #sarino #onlineshop #dubai #shopping #bag #crossbody #guess", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/558271741_17858442435517728_8935715209147388570_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=MzczNTg1ODczMTM0Nzg5ODQyOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=eBikZXi4DkQQ7kNvwF9U13a&_nc_oc=Adr1dYJ1TjLgaqd2zl6s9OflUKViiK-gB9Zfr_ybcZTj7X_jMI4kV9ijUXdQUvfkHfommJcbtWMhB9xPoiCtZjka&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQIUs8xLM-9ULAIY_kYyV21x3s_m_1p1qPsqTkHCm9lL5w&oe=6AB2151C", "url": "https://www.instagram.com/p/DPYb70giBCl/"}, {"id": "3735831882148349531", "code": "DPYV020CAZb", "type": "Carousel", "date": "2025-10-04", "time": "11:48", "weekday": "شنبه", "hour": 11, "likes": 42, "comments": 9, "plays": 0, "caption": "H&M 🧥\nنگاش می‌کنم سرمای زمستون و حس می‌کنم ولی گرمم میشه 🥶🔥\nقیمتش خیلی خوب شده و همه‌ی سایزاشم موجوده 🤯\nالان دیگه وقت خرید آیتم های زمستونس 😍\nواسه ثبت سفارش و استعلام قیمت از طریق دایرکت باهام در ارتباط باشید 📥\n__________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_آنلاین #سفارش_از_دبی #اچ_اند_ام #کاپشن #کت #پافر #sarino #onlineshop #dubai #shopping #hm #jacket", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/559274536_17858439750517728_2843797173602653950_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=MzczNTgzMTg3MDQ1NDY1MTE2OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=xK78m0-Ko8kQ7kNvwGsT3v3&_nc_oc=AdrkWFkdIVV0mHo4etrFB8iJfNYTI2_N73LkL7kI0QD-FVRjnv5xlMjESFxjbufLBW-zmW6p-SScV6pjF-p1PULA&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQKh6RbEnXtvTE7rvI9xzDrUV0xGFf5KnJLf96fEZjsZfg&oe=6AB21754", "url": "https://www.instagram.com/p/DPYV020CAZb/"}, {"id": "3733702162703202611", "code": "DPQxlXBCDkz", "type": "Carousel", "date": "2025-10-01", "time": "13:16", "weekday": "چهارشنبه", "hour": 13, "likes": 23, "comments": 3, "plays": 0, "caption": "Calvin Klein 🤍\nجزو کراپ های ورزشی بود که تا دیدم عاشقش شدم 😍\nخوش قیمت، با کیفیت و پر استفاده 😎\nقیمتشو استوری کردم ولی به دلیل نوسان ارز دوباره ازم قیمت بگیر 🦦\nواسه ثبت سفارش هم از طریق دایرکت باهام در ارتباط باش 🥰\n________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #کراپ #ورزشی #کلوین_کلاین #sarino #onlineshop #dubai #shopping #croptop #sports #ck #calvinklein", "thumbnail": "https://scontent-cph2-1.cdninstagram.com/v/t51.82787-15/558614383_17858077419517728_6005960016039690344_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzczMzcwMjE1MTYzODY3MDc2Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=8VhTJaIrJbIQ7kNvwGUwMUU&_nc_oc=AdoVhzB1tiETRqIVhi4ViKuaIFqGBXz8iMG3ysPog1Ze8AjpsCo_cTJTckRCesKjg3SOaWouuN6SmeixHHLH02ab&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-cph2-1.cdninstagram.com&_nc_gid=ayLO0YPlgW29rEhNg4nzHw&_nc_ss=7a3ba&oh=00_AQLCGVX2oTk-aZFGCVFf9b94A48M21Pwx7y0LgbFK6oS1g&oe=6AB1FD04", "url": "https://www.instagram.com/p/DPQxlXBCDkz/"}, {"id": "3733156318237175442", "code": "DPO1eRviC6S", "type": "Carousel", "date": "2025-09-30", "time": "19:12", "weekday": "سه‌شنبه", "hour": 19, "likes": 34, "comments": 13, "plays": 0, "caption": "Veja 🫠🤍\nوجا جزو کفش هاییست که بسیار دوستش میدارم 🥹\nواقعا در اوج سادگی قشنگه 😍\nاستوری ها رو چک کن که بعضی مدلا خیلی خوب تخفیف خوردن 😎\nاگه مدل خاصی هم مد نظرت بود حتما واسم بفرست تا با بهترین قیمت واست پیداش کنم 🤩\n______________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #وجا #کفش #کتونی #سفارش_آنلاین #خرید_آنلاین #sarino #onlineshop #dubai #shopping #veja #sneakers", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/556097222_17857990254517728_2429545078424335138_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=MzczMzE1NjMwMTg4Nzc3MDYzNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=Wjj-lpeIVBgQ7kNvwEfQeGm&_nc_oc=AdqBV94ZuLDvdEk3WjGv78GvzrKPIPVj3MGHceaiC5mkK3pFYg6iNyQV6UI_lyyzlgI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQIzal02_aihKk_jctPrQRg7Wau218ZCsCvGUwzUxhe1VQ&oe=6AB21383", "url": "https://www.instagram.com/p/DPO1eRviC6S/"}, {"id": "3731902930270828624", "code": "DPKYfFPCDhQ", "type": "Reel", "date": "2025-09-29", "time": "01:42", "weekday": "دوشنبه", "hour": 1, "likes": 62, "comments": 3, "plays": 1914, "caption": "کفش جدید سفارش بدی، یک هفته‌ای هم بدستت برسه 😍 \nچی از این بهتر؟؟ \nکفش نایک مدل Downshifter 13 رو میتونید در سایزها و رنگ‌های مختلف سفارش بدید 😎👌🏽\n______________________\n#سرینو #آنلاین_شاپ #نایک #خرید_از_دبی #سفارش_از_دبی #نایکی #کتونی #کفش #sarino #onlineshop #dubai #shopping #nike #sportshoes", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.71878-15/557345392_1239570561272282_913222416448643393_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=104&ig_cache_key=MzczMTkwMjkzMDI3MDgyODYyNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fZGVmYXVsdF9jb3Zlcl9mcmFtZS5DMyJ9&_nc_ohc=4qf-MpeqHl8Q7kNvwGMVBPD&_nc_oc=AdrvEaU5gEbFNQQsOzqUpJfZuW6jqCCgNQaCynz5D_6QxI53N_9_11LupNtG1xQ07Xw&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQL5upqblxfQrX8X140iTgq1dqKoPTxc-AY6T_RoSjix_A&oe=6AB21E38", "url": "https://www.instagram.com/p/DPKYfFPCDhQ/"}, {"id": "3731779693566282421", "code": "DPJ8dwHCMq1", "type": "Carousel", "date": "2025-09-28", "time": "21:37", "weekday": "یک‌شنبه", "hour": 21, "likes": 43, "comments": 7, "plays": 0, "caption": "Tommy Hilfiger ♥️\nبه نظرم واسه آقایونی که از دستبند استفاده میکنن میتونه کادوی خیلی خوب و مناسبی باشه 😍\nقیمتشو توی دایرکت ازم بپرس 🥰\nاگه خواستی مدلای بیشترشو هم واست میفرستم تا بتونی انتخاب کنی 😎\n____________________________\n#سرینو #آنلاین_شاپ #دستبند #سفارش_از_دبی #خرید_از_دبی #تامی_هیلفیگر #خرید #سفارش_آنلاین #sarino #onlineshop #bracelet #tommyhilfiger #dubai #shopping", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/554353503_17857774116517728_3815641849655287043_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzczMTc3OTY3Mzc3NzUzNzAxMw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=7m_qsDqIPHQQ7kNvwFprP2g&_nc_oc=AdrWYwjDUzkBO5suVao12S4sPwInvMUug2CcyKTE1T4Y7w4BxlurlOPylspcWf6ZAc4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQL0uKmpab5osE621XWc4jDPSBmP7yZ7y3MPSCmAVWIEAQ&oe=6AB204B9", "url": "https://www.instagram.com/p/DPJ8dwHCMq1/"}, {"id": "3731502850116220837", "code": "DPI9hJjiPel", "type": "Carousel", "date": "2025-09-28", "time": "12:27", "weekday": "یک‌شنبه", "hour": 12, "likes": 26, "comments": 1, "plays": 0, "caption": "Clinique 💫\nاین پک کوچیک ولی همه‌کاره‌ست 😍\n✨ بالم Take The Day Off برای پاک کردن آرایش\n✨ ریمل High Impact برای مژه‌های خوشگل\n✨ رژ Almost Lipstick توی رنگ معروف Black Honey\nهمه‌ش توی یه جعبه‌ جمع‌وجور که میتونی هرجا با خودت ببری 🚀\nواسه استعلام قیمت و موجودی از طریق دایرکت باهام در ارتباط باش 🥰\n______________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #کلینیک #آرایشی #مراقبت_پوست #sarino #onlineshop #italy #shopping #clinique #زیبایی #مراقبت_روزانه", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/554331410_17857722414517728_57265992278375842_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzczMTUwMjg0MDA0OTg3ODc5MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=P4jjFax53cEQ7kNvwFI4Xf8&_nc_oc=AdrBVZFVOJJPYJOaVQlthszDyMz0d6sy1eu1yL_SPEH8og2_IFHvBQh0sSpFOD6I_Ws&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQKsQP88U4Xu3uAWHj_qqndSQzCz39d-znve5FbKiYilIg&oe=6AB20FF2", "url": "https://www.instagram.com/p/DPI9hJjiPel/"}, {"id": "3729230368248202921", "code": "DPA40L5CIap", "type": "Carousel", "date": "2025-09-25", "time": "09:12", "weekday": "پنج‌شنبه", "hour": 9, "likes": 32, "comments": 3, "plays": 0, "caption": "Karl Lagerfeld 🕶️\nاین کفش از اون کفشاییه که نباید از دستش بدی 🤩\nاز اوناییه که اگه out of stock بشه، دلت میسوزه که چرا زودتر واسه خریدش اقدام نکردی 🫠\nمخصوصا الان که علاوه بر ۳۰ درصد تخفیف خودش، ۲۵ درصد هم اکسترا آف خورده 🤯\nقیمتشو توی استوری گذاشتم، اما به دلیل نوسان ارز مجدد ازم قیمت بگیر، من توی دایرکت راهنماییت می‌کنم 😍\n________________________\n#سرینو #آنلاین_شاپ #خرید_از_کانادا #سفارش_از_کانادا #کفش #کارل_لاگِرفِلد #sarino #shopping #online_ahop #karllagerfeld #sneakers #canada", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/552988376_17857350852517728_1618049901590719184_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=111&ig_cache_key=MzcyOTIzMDM1NzEzMzI5NTk5NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTIwMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=-Cyj-sZZlj8Q7kNvwGLudPb&_nc_oc=Adq_KHiVuHUI-WgzO7EhVek5w-qePguVAIbG4B6H015kbn3A0QT9bIrNxe2uk3bGJgU&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQKgpJX6A2Oo8vviDkH0hjiBwMGOO88AIZbSqeqd0KIY7A&oe=6AB20EAC", "url": "https://www.instagram.com/p/DPA40L5CIap/"}, {"id": "3728604863480243480", "code": "DO-ql5LiKUY", "type": "Carousel", "date": "2025-09-24", "time": "12:29", "weekday": "چهارشنبه", "hour": 12, "likes": 19, "comments": 3, "plays": 0, "caption": "Michael Kors 🙆🏻‍♂️\nاین پست شامل یک مدل هودی آستین کوتاه و یک مدل سویشرت از برند مایکل کورس هست ☺️\nمن مایکل کورس رو از کانادا واستون سفارش میدم که ارزون تر از بقیه جاها باشه 🥰\nاین ۲ مدل هم الان توی اکسترا آف هستن 😇\nبرای استعلام قیمت، موجودی و سایز از طریق دایرکت با من در ارتباط باشین📥\n_________________________\n#سرینو #آنلاین_شاپ #کانادا #خرید_از_کانادا #سفارش_از_کانادا #مایکل_کورس #مردانه #هودی #سویشرت #sarino #onlineshop #canada #shopping #michaelkors #hoodie #sweatshirt", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/552202628_17857248921517728_8204693929156628004_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzcyODYwNDg1MDk1NjA2MzY1OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=7_sTUGtEAYUQ7kNvwHeu_1t&_nc_oc=AdonSfeE-Cp8MWL8tBWcWs8AeJBe4OAwpGFB9L6t1Q2BaJ_n-_YWiN3BY979H3n_sfU&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQI0aahic4B0xSztD_jwvVsCNGQKR43NSmO_zn9nOK97ZA&oe=6AB21D10", "url": "https://www.instagram.com/p/DO-ql5LiKUY/"}, {"id": "3728188634214992263", "code": "DO9L89eCImH", "type": "Carousel", "date": "2025-09-23", "time": "22:42", "weekday": "سه‌شنبه", "hour": 22, "likes": 38, "comments": 2, "plays": 0, "caption": "Gym Shark 🦈\nجیم شارک کانادا یه تخفیف فوق العاده داره که حیفه استفاده نکنید 😝\nاین کیف نُقلی رو نگاه کنید آخه با این رنگ بندی جذاب 🥹\nمشکیش میتونه خیلی کاربردی باشه 👌🏽\nهر چیزی از این برند خواستین میتونید بهم بگید یا لینک واسم بفرستین من سعی می‌کنم به بهترین شکل رانماییتون کنم 🥰\nقیمت این کیف رو هم توی استوری میتونید ببینید 😌\nاما به دلیل نوسان ارز لطفا قبل از ثبت سفارش مجدد قیمت بگیرید ازم 📈\n______________________________\n#سرینو #آنلاین_شاپ #کانادا #خرید_از_کانادا #سفارش_از_کانادا #جیم_شارک #خرید_آنلاین #sarino #onlineshop #gymshark #bag #canada #shopping #کیف", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/552185289_17857191198517728_821308002039779335_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=110&ig_cache_key=MzcyODE4ODYxMjY2NDYyNTc3OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTIwMC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=pgVnDUJ9kjEQ7kNvwF7jM_s&_nc_oc=AdrxddfZBemOXdPBGwaMrdxCdFRPqlTvetcTefhiI1_dKKosve9pjwXpgycpq6d9S9E&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQK1tYWq3ZsYXv_Fo4gSJq1US0MSDtW11QnO9k4oFu2fLQ&oe=6AB22198", "url": "https://www.instagram.com/p/DO9L89eCImH/"}, {"id": "3725718699320559362", "code": "DO0aWrWCEcC", "type": "Reel", "date": "2025-09-20", "time": "13:13", "weekday": "شنبه", "hour": 13, "likes": 55, "comments": 7, "plays": 1438, "caption": "زیبا نیست؟ 🥹\nویدئوشو یکم دیر گذاشتم ولی چیزی از ارزش و زیباییش کم نمیکنه 😍\nقیمتش عالیه پس واسه ثبت سفارش بهم دایرکت بده 🥰\n________________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #ساعت #دی_کی_ان_وای #sarino #onlineshop #italy #shopping #watch #dkny", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/551827374_17856776937517728_9058184095987234650_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=110&ig_cache_key=MzcyNTcxODY5OTMyMDU1OTM2MjE3ODU2Nzc2OTM0NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzguc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=tROXCOcsJP4Q7kNvwF2-JYs&_nc_oc=AdqyqPNDVHarN3NSrGnuA0vH-AX7_A3YqyGYMtUlKihmWb9Xn2ySKeVLygOtnVp6r0g&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQIQ1YMYP6IHEKvor_NY-U03IzEw9ECA1omxRm9xNfunDA&oe=6AB20D31", "url": "https://www.instagram.com/p/DO0aWrWCEcC/"}, {"id": "3727329502477983756", "code": "DO6Im8sCKAM", "type": "Carousel", "date": "2025-09-22", "time": "18:15", "weekday": "دوشنبه", "hour": 18, "likes": 39, "comments": 10, "plays": 0, "caption": "Puma 👟\nمن که عاشق ترکیب رنگش شدم، شما رو نمی‌دونم 😍\nکتونی پوما به این خوشگلی دیده بودین؟ 🥹\nتازه قیمتشم استثنائی شده 🤩\nواسه استعلام قیمت و موجودی بهم دایرکت بده اگه واسه سایز هم نیاز به راهنمایی داشتی کمکت می‌کنم 🥰 \nثبت سفارش هم از طریق دایرکت انجام میشه 📥\n________________________\n#سرینو #آنلاین_شاپ #سفارش_از_دبی #خرید_از_دبی #پوما #کتونی #مردانه #تخفیف #sarino #onlineshop #puma #sneakers #dubai", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/551475391_17857051632517728_7496865159593666353_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=MzcyNzMyOTQ4MzI1OTY4Njk4MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=yMNc91x58OIQ7kNvwEnqP71&_nc_oc=AdqY1EU2lHQILKVnJbBEfXeLPWMfZz_g_DxImVBUtmMMYUcgIH-GmlitZa_1lGA9N4s&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQIzSsLrolZkoHnJFtgx115rkEQdrVA73VeEamYMQrlDEA&oe=6AB1F3C4", "url": "https://www.instagram.com/p/DO6Im8sCKAM/"}, {"id": "3726634448138571141", "code": "DO3qkk5CI2F", "type": "Carousel", "date": "2025-09-21", "time": "19:14", "weekday": "یک‌شنبه", "hour": 19, "likes": 25, "comments": 1, "plays": 0, "caption": "Tommy Hilfiger 🙊\nبه نظرم توی استایل اقایون رنگای قهوه‌ای ، مشکی و سورمه‌ای حرف اول و میزنن 🥰\nاین مدل کمربند از برند تامی هیلفیگر خیلی جذاب و کاربردی هستن 👖\nاز طریق دایرکت میتونید واسه استعلام قیمت و موجودی با من در ارتباط باشید 🙈 \n___________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_آنلاین #سفارش_از_دبی #کمربند #قهوه‌ای #مشکی #مردانه #تامی_هیلفیگر #sarino #onlineshop #tommyhilfiger #belt #dubai", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/552755899_17856934254517728_4869377144454063749_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=MzcyNjYzNDQzNTUwNTI5MjI1MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=610UpgFq3tMQ7kNvwECmqaa&_nc_oc=AdrB3QafzIaMdNbOgdoOuPe0VxsG0iWWL8ErhBO3jcPHxRHVlTqK1XLhroT3VFJ_Xuk&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQLla3IwnqXXoeusoAMNqO9j69GOXPrrL_bSd1XXo_SdrA&oe=6AB210E5", "url": "https://www.instagram.com/p/DO3qkk5CI2F/"}, {"id": "3725714015390293060", "code": "DO0ZShGCFxE", "type": "Carousel", "date": "2025-09-20", "time": "12:45", "weekday": "شنبه", "hour": 12, "likes": 27, "comments": 6, "plays": 0, "caption": "Oysho 🤌🏽\nاین شلوارای اویشو این روزا خیلی ترند شدن 😍\nدیگه اویشو رو از ترکیه سفارش نده چون من از ایتالیا با بهترین قیمت واست ثبت سفارش میکنم 💸\nاین مدل رنگ کرم و طوسی داره که خیلی خوشکله 🫠\nیه مدل دیگشم هست که پیلی از بغل داره بهم دایرکت بده تا عکساشو واست بفرستم 🥰\nواسه استعلام قیمت و موجودی و راهنمایی سایز هم من توی دایرکت کمکت میکنم ☺️\n______________________\n#سرینو #آنلاین_شاپ #اویشو #شلوار #ترتد #خرید_از_ایتالیا #سفارش_از_ایتالیا #sarino #onlineshop #oysho #italy #shopping #trousers", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/551056062_17856774504517728_277813523685200960_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=111&ig_cache_key=MzcyNTcxNDAwMDY4NTA5ODQ1MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=_H6RHgMAt10Q7kNvwGqE3Fm&_nc_oc=AdpWtNv-Bg_-etvNtHfT2qMv_7MQX4Z0QUpcgLKLHFuDCvUAFviu-q6nPJzVbT-7fZ0&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQICzNsrtLHO4tHJpusGZaB14mL3hieaXdauVdEUWhD51w&oe=6AB21167", "url": "https://www.instagram.com/p/DO0ZShGCFxE/"}, {"id": "3725646134212356593", "code": "DO0J2t0iOnx", "type": "Carousel", "date": "2025-09-20", "time": "10:30", "weekday": "شنبه", "hour": 10, "likes": 31, "comments": 13, "plays": 0, "caption": "Just Cavali 🐍\nمن خودم به شخصه عاشق این مدل ساعتم 🫠\nرنگش سیلور و رزگلده و خیلی راحت سِت میشه 😍\nمهم تر از اون مدلشه که هم با تیپ اسپورت استایل میشه هم مجلسی ⌚️\nواسه استعلام قیمت و موجودی بهم دایرکت بده 📥\nاگه مدل های بیشترم خواستی واست میفرستم 🙈\n________________________\n#سرینو #آنلاین_شاپ #سفارش_از_ایتالیا #خرید_از_ایتالیا #ساعت #جاست_کاوالی #sarino #onlineshop #italy #watch #justcavalli", "thumbnail": "https://scontent-bru2-1.cdninstagram.com/v/t51.82787-15/550763011_17856764412517728_904965524632498128_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzcyNTY0NjExMzA1NjI3ODMxMA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=_sZn37NfB4wQ7kNvwEmrGlw&_nc_oc=Adqti8d8I7AvX6RZqnCFBy3EQo1RE0xyxNy85LoZ3lw5MhhqR1Ov7Sd64tmTGp_5d3M&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-bru2-1.cdninstagram.com&_nc_gid=XcdS6KqFV4PJCRKYuOOFFw&_nc_ss=7a3ba&oh=00_AQLncABwTu6lK9sU-tdpPM6OlorZ5Jl6E6D6UhBVsIMlwA&oe=6AB21E66", "url": "https://www.instagram.com/p/DO0J2t0iOnx/"}, {"id": "3721413657541233812", "code": "DOlHgEwCEyU", "type": "Carousel", "date": "2025-09-14", "time": "14:21", "weekday": "یک‌شنبه", "hour": 14, "likes": 41, "comments": 2, "plays": 0, "caption": "Nike Kids Tracksuit 🎾\n\nمیدونستین که واسه کوچولوهاتوتم هر چیزی که لازم داشته باشید میتونید به من سفارش بدین؟ 😍\nقیمت این کار رو میتونید توی استوری ببینید ☺️\nو مثل همیشه واسه استعلام سایز و ثبت سفارش میتونید از طریق دایرکت با من در ارتباط باشید 😇\n______________________\n#سرینو #آنلاین_شاپ #سفارش_آنلاین #سفارش_از_دبی #خرید_از_دبی #نایک #نایکی #بچهگانه #لباس_ورزشی #sarino #onlineshop #dubai #nike #tracksuit #sport #kids", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/549202565_17856088107517728_7230473233287786552_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=MzcyMTQxMzY0NzAzODY4NTgyNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=W6wDnDf63PQQ7kNvwEiWsJr&_nc_oc=AdpdJ6eoKBSx1DMlLRN81K7lXncnFThYU2NDBjD_I7fnCQgC81IENng8mDaQ7sCHkM4S0kbVUzBYh0IPFb4WO2hI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQJCBHqBeOvAZbSD9nvy5Cjx4OKnCMLJRCI0HFmK21qRgQ&oe=6AB1FAA9", "url": "https://www.instagram.com/p/DOlHgEwCEyU/"}, {"id": "3719214465565639897", "code": "DOdTdnniMTZ", "type": "Carousel", "date": "2025-09-11", "time": "13:32", "weekday": "پنج‌شنبه", "hour": 13, "likes": 43, "comments": 4, "plays": 0, "caption": "Love Moschino 🤍\nو من باز هم عاشق شدم 🫠\nآخه کتونی انقدر خوشگل؟؟؟ 😍\nحال میکنید چیا واستون پیدا می‌کنم؟؟ اینجا آیتم های تکراری نمیبینید 😏\nتخفیفش یک روزه هست ، واسه دیدن قیمتش استوری رو چک کن، و واسه استعلام موجودی و ثبت سفارش بهم دایرکت بده 🥰\n______________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #ایتالیا #کفش #کتونی #ماسکینو #لاو_ماسکینو #sarino #onlineshop #italy #sneakers #lovemoschino #moschino", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/545272478_17855709126517728_7469203816074782617_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzcxOTIxNDQ1MzM3Njk0NjQ4NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=ci6FqbItU_IQ7kNvwHknpZ8&_nc_oc=AdpEUluGXUOAoL5hP0EWcN_dE1t9TF48P8_ExbVox6i8dNFn8Qr2M1-3J9r9vj6C-m1nJBk7YB2429CTEOni-ALd&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQJ8jo6ltsR1w19d8QtfTOdIXyW4ALoEbyUTeLqT3GN07g&oe=6AB216DB", "url": "https://www.instagram.com/p/DOdTdnniMTZ/"}, {"id": "3719166835452047308", "code": "DOdIogniG_M", "type": "Reel", "date": "2025-09-11", "time": "12:11", "weekday": "پنج‌شنبه", "hour": 12, "likes": 74, "comments": 7, "plays": 2531, "caption": "روزای آخر تابستونه و تا میتونید دریا برید و آفتاب بگیرید و لذت ببرید 🥲🌊☀️🧴🕶️", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/547405559_17855703672517728_7035710531139051671_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=107&ig_cache_key=MzcxOTE2NjgzNTQ1MjA0NzMwODE3ODU1NzAzNjY5NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjE0NDguc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=_XihOEcY7msQ7kNvwGjvNWc&_nc_oc=AdqOLA4sXcE6aBXs0fsk0-upZTgNpe-nqLv4Zx0dFrHs3OCUj5uWT8FRqbfnkcBKJWssrep8kf5MhbHMeo_rCVdJ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQKWhhqaf1Ge3L6wKcy0AS8FCb3DpVMyKQRCGgZhlMvvIA&oe=6AB22856", "url": "https://www.instagram.com/p/DOdIogniG_M/"}, {"id": "3717346607483098487", "code": "DOWqwtOCJV3", "type": "Carousel", "date": "2025-09-08", "time": "23:41", "weekday": "دوشنبه", "hour": 23, "likes": 34, "comments": 3, "plays": 0, "caption": "Versace 👑\nساعت های ورساچه واقعا دوستداشتنین 🥹\nاز زیبایی و ظرافت این مدل هم که نگم براتون 😍\nقیمتشو توی استوری گذاشتم واستون ، سفارش از ایتالیاست و تخفیفش محدوده پس از دستش ندین 🤌🏽\n____________________________\n#سرینو #آنلاین_شاپ #سفارش_آنلاین #سفارش_از_ایتالیا #خرید_از_ایتالیا #ساعت #ورساچه #sarino #onlineshop #shopping #versace #watch", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/543799458_17855417184517728_6187619765493142194_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=MzcxNzM0NjU5NDk4NDA0NDUxOA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=XVB28KIIfLgQ7kNvwFWfPBc&_nc_oc=AdobED6g8VvLE0cARZPMYzZphWyWtOlA79czGazSEhjEN41mI9itdb8Zt0dmmeIzfQsa2WMicbKnWG07kE9dXcD1&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQL290SLK-0DdtHOYwpibP8BOPLUGTxmYkrLun7BYREDFA&oe=6AB2004F", "url": "https://www.instagram.com/p/DOWqwtOCJV3/"}, {"id": "3715978036832144742", "code": "DORzlYeiI1m", "type": "Carousel", "date": "2025-09-07", "time": "02:22", "weekday": "یک‌شنبه", "hour": 2, "likes": 31, "comments": 1, "plays": 0, "caption": "DKNY 💞\nجزو برندای دوست داشتنی و مورد علاقه‌ی خودمه 🥹\nعلاوه بر اون من عاشق این مدل کیف هم هستم 🤭\nرنگشم که نگم دیگه بی نظیره 😍\nقیمتشو توی استوری میتونی ببینی 🥰\nواسه ثبت سفارش و استعلام موجودی و قیمت لحظه‌ای هم از طریق دایرکت میتونی باهام در ارتباط باشی 💖\n_____________________________\n#سرینو #آنلاین_شاپ #خرید #خرید_از_ایتالیا #سفارش_آنلاین #سفارشی #سفارش_از_ایتالیا #ایتالیا #کیف #صورتی #sarino #onlineshop #italy #pink #bag #dkny #shopping", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/542944719_17855180070517728_8534357127491159953_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzcxNTk3ODAyMzg2MzM1NzUzNg%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=Lyt2vWC7h5YQ7kNvwEkzAPU&_nc_oc=Adoa9Tdfo9QFHAokyvJbMKDwkWkHkmWtzBADC7UUwIsLPsfh4K8xBRPfHtgB1CBL8N34CF4rzXVXJQaEZVT7W91n&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQI0b1qKm2gCCVhn4i5BOw_kVMugA6Wir942SN2dlTddGQ&oe=6AB21D74", "url": "https://www.instagram.com/p/DORzlYeiI1m/"}, {"id": "3715963757508714520", "code": "DORwVl0iGAY", "type": "Carousel", "date": "2025-09-07", "time": "01:53", "weekday": "یک‌شنبه", "hour": 1, "likes": 33, "comments": 4, "plays": 0, "caption": "ببینید چی آف خورده دوباره 😍 \nالبته تخفیفش محدوده ❌\nرنگش فوق‌العاده خوشگل و پرکاربرده 🥹\nواسه استعلام قیمت و موجودی بهم دایرکت بده 📥\nواسه دیدن مدل های بیشتر استوری و هایلایت‌ها رو چک کن ☺️\n________________________\n#سرینو #آنلاین_شاپ #کلوین_کلین #کلوین_کلاین #کفش #کتونی #کرمی #خرید_از_ایتالیا #سفارش_آنلاین #سفارشی #سفارش_از_ایتالیا #sarino #onlineshop #italy #ck #calvinklein #sneakers #beige", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/543830409_17855178618517728_349103554071008068_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=MzcxNTk2Mzc0NDU2NTEyODg1NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=sAyo1GFpTcsQ7kNvwF2h3yf&_nc_oc=AdqyT1pxU0qFBNdJXaGKTy7xBAfOJ4eNhu6Dci9n-anW_T_waYFhvl2bQLfZXomOegie1sWzMvx8wVvxrzP2-7Cq&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQIw464SRyYTyJVs-XyPeOFh_DY9dwb8VGjsr74WnCt-wQ&oe=6AB22698", "url": "https://www.instagram.com/p/DORwVl0iGAY/"}, {"id": "3715089846369803259", "code": "DOOpogpiFv7", "type": "Reel", "date": "2025-09-05", "time": "20:58", "weekday": "جمعه", "hour": 20, "likes": 206, "comments": 7, "plays": 5630, "caption": "⁨\t⁨\tزندگی ایده‌آل شما چه شکلیه؟ 🤭⁩⁩", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/542789848_17855004966517728_6157608059739696204_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=104&ig_cache_key=MzcxNTA4OTg0NjM2OTgwMzI1OTE3ODU1MDA0OTYzNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjk2Mi5zZHIudmlkZW9fZGVmYXVsdF9jb3Zlcl9mcmFtZS5DMyJ9&_nc_ohc=bG75QALcODUQ7kNvwHXw5PG&_nc_oc=AdpZjBRlCxkRjL93E4sJ-Q8JC3YxhjKs0rBMMboxIHtBwqx3LoEB2n9ZmdZyCtF_RTGJ4iWrlTe-cIGqcmhPdkdT&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQLgNS_QGNHkaNUkBuN1PbydC1FbOpoTBoALo3qav-FF4g&oe=6AB22122", "url": "https://www.instagram.com/p/DOOpogpiFv7/"}, {"id": "3714208238364311908", "code": "DOLhLbNiMFk", "type": "Carousel", "date": "2025-09-04", "time": "15:45", "weekday": "پنج‌شنبه", "hour": 15, "likes": 22, "comments": 5, "plays": 0, "caption": "Marc Jacobs 🕶️\nزیادی خوشگل نیست؟ 🥹\nیه فریم خاص با رنگ متفاوت 🤭\nاسلاید آخر فیلمشو هم گذاشتم واستون 🤗\nبرای استعلام قیمت و موجودی بهم دایرکت بدین 🥰\n______________________\n\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #مارک_جیکوبز #عینک #عینک_آفتابی #sarino #onlineshop #dubai #glasses #sunglasses #marcjacobs #shopping", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/542861266_17854837872517728_1480822690391182102_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=109&ig_cache_key=MzcxNDIwODIxOTAxMTc3Nzk4Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=NuCQm49r27EQ7kNvwH8qNkF&_nc_oc=AdoFf2upiCxnV9WyHjvHs_nRlMivLiWYtjrn0PJQn07drXaPmyqd4dSF7GU_grmGEUYviEZUaALrYW2Gx_w1jZfA&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQJiq-pA3fA7-vHWcuvfQzFcooc9PmOqf95RwzevrUsUww&oe=6AB1F8DA", "url": "https://www.instagram.com/p/DOLhLbNiMFk/"}, {"id": "3713829929113650541", "code": "DOKLKTRCIVt", "type": "Carousel", "date": "2025-09-04", "time": "03:14", "weekday": "پنج‌شنبه", "hour": 3, "likes": 21, "comments": 2, "plays": 0, "caption": "Calvin Klein 🌸\nبه نظرم دُرس صورتی چیزیه که باید تو کمد هر دختری باشه 🙈\nپس میتونی از الان واسه پاییز و زمستون به داشتنش فکر کنی 😍\nواسه استعلام قیمت و موجودی از طریق دایرکت با من در ارتباط باشین 🥰\n\n____________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارش_آنلاین #کلوین_کلین #کلوین_کلاین #دُرس #هودی #صورتی #sarino #onlineshop #dubai #shopping #ck #calvinklein #pink #hoodie #sweatshirt", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/542908211_17854784523517728_7883484897191631180_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzcxMzgyOTkxMTk1MDU0NDY5NQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=n3VH9N-XlVgQ7kNvwHFN06y&_nc_oc=AdqW8w6EH7tRxacQsDu0eCivmGiAQ3raUxn0AB6vL6QjaK6zOH6kBR_TR1CPyVuZBrsf_70iwo79KGRIi2tDKtLy&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQLPrk4kdEvcUxWVMTESo3hj_BWw14hwFq8mrCsTDAPS4Q&oe=6AB22156", "url": "https://www.instagram.com/p/DOKLKTRCIVt/"}, {"id": "3713053513178715338", "code": "DOHan9lCJTK", "type": "Carousel", "date": "2025-09-03", "time": "01:31", "weekday": "چهارشنبه", "hour": 1, "likes": 17, "comments": 0, "plays": 0, "caption": "KURT GEIGER 🦚\nجزو برنداييه كه خدا رو شكر كمتر كسى توى ايران ميشناستش وانقدر دوستش دارم كه دلم مى خواد ماله خودم باشه فقط🥹\nو شما البته😌🙈\nآخه شما این عسل جذاب رو نگاه کنید 😍\nواسه استعلام قیمت و موجودی، از طریق دایرکت با من در ارتباط باشین 🥰", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/541950989_17854652499517728_1292921593987509093_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=MzcxMzA1MzQ5NzQxNjU0NzA2OA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=tbdxT2lZu7EQ7kNvwHa1gLH&_nc_oc=AdrndbBpJyHTrfGa8QO7aqb7OiqieGUhX6PHMZbIg-ez_5NBK-ksrhA2VaoM-_h7PGH9nCSF3yF6iMMWKYLUiUXV&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQJTZVGsL53SXJJ2o2as99--3tUmvj0jbzhPW_JLK8KnDw&oe=6AB21CFB", "url": "https://www.instagram.com/p/DOHan9lCJTK/"}, {"id": "3711252738945360000", "code": "DOBBLP4iKCA", "type": "Carousel", "date": "2025-08-31", "time": "13:53", "weekday": "یک‌شنبه", "hour": 13, "likes": 26, "comments": 3, "plays": 0, "caption": "کوله‌پشتی کراکس رو دیده بودین؟؟ 🙈\nجای ۲۹تا جیبیتز داره که میتونه از اینی که هست حتی خوشگل‌ترش کنه 😍\nساده، کاربردی، متفاوت 🥹\nمن فقط توی استور کانادا تونستم پیداش کنم و رنگ مشکیش الان ۱۵ درصد تخفیف داره 🤩\nواسه اطلاع از قیمت و ثبت سفارش بهم دایرکت بدین 🥰\n_______________________\n\n#سرینو #آنلاین_شاپ #خرید_از_کانادا #سفارش_از_کانادا #کانادا #کراکس #کیف #کوله_پشتی #مشکی #sarino #onlineshop #canada #crocs #backpack #black", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/541562966_17854327683517728_5622932899465143296_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=MzcxMTI1MjcyNDg0NDA4Nzk5NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=P-EkOxg9pl4Q7kNvwHrE_4C&_nc_oc=AdpAXrxIvirzCaoIrL0IgL6L5tZ4Qpz5atms7UP_6SbDqN4-BTiQsNJgnf0lzYNpgg23Hs6X6EGDp922pAP_yEWy&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQLpT7Ai4ruWk7th85qDYTZom2EwQlc8eKti5eqrZJWpEg&oe=6AB1FC27", "url": "https://www.instagram.com/p/DOBBLP4iKCA/"}, {"id": "3709210377851508333", "code": "DN5wy-5CBZt", "type": "Carousel", "date": "2025-08-28", "time": "18:15", "weekday": "پنج‌شنبه", "hour": 18, "likes": 22, "comments": 2, "plays": 0, "caption": "Calvin Klein Tshirt 👕\nمن که خودم عاشق ترکیب رنگ آبی و صورتی‌ام 💕\nاین تیشرت کلوین هم واقعا عسله 🍯\nقیمتش توی استوری هست ولی به خاطر نوسان ارز مجدد قیمت بگیرین ازم🫠\n________________________\n\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #سفارش_آنلاین #تیشرت #کلوین_کلاین #sarino #onlineshop #shopping #italy #tshirt #ck #calvinklein", "thumbnail": "https://instagram.frix7-1.fna.fbcdn.net/v/t51.82787-15/541220258_17853976212517728_487112204796277456_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=106&ig_cache_key=MzcwOTIxMDM1NDc2NjA3MDM1MA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=WvnAxUBFVggQ7kNvwGF8SwO&_nc_oc=AdpAdw0yD9JF76XhkCZuXbqwEpNNFpjAaf5oLT-s6uq0asPVROazOuKKG_jOVStH8LAIx3uhnOSBUoTngc1j6Rw1&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=instagram.frix7-1.fna&_nc_gid=cxlsaStAOaV8eFn3AhStjw&_nc_ss=7a3ba&oh=00_AQJZe_ifv_JkzNWuiM4iUeC_x_Grf7FsNznvX9BVvYTg7A&oe=6AB229AE", "url": "https://www.instagram.com/p/DN5wy-5CBZt/"}, {"id": "3707806032837272365", "code": "DN0xfErUOMt", "type": "Reel", "date": "2025-08-26", "time": "19:46", "weekday": "سه‌شنبه", "hour": 19, "likes": 110, "comments": 5, "plays": 3996, "caption": "شما سِت می‌کنید یا حسادت؟ 🤫\n\nاینجا شما میتونید هر آیتمی که دوست دارید رو واسه خودتون و دوستاتون به من سفارش بدین و من سعی می‌کنم در سریع ترین زمان ممکن به دستتون برسونم😍\nمنو به دوستاتون معرفی کنید تا با هم کلی خرید هیجان انگیز داشته باشیم🥹\n\n___________________\n#سرینو #آنلاین_شاپ #sarino #onlineshop #خرید_از_دبی #خرید_از_ایتالیا #سفارش_از_دبی #dubai #سفارش_مستقیم #ارسال_به_ایران #italy #guess #گس #تیشرت #دوستانه #دوست", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.71878-15/539061368_1103814708551364_4662352919462102075_n.jpg?stp=dst-jpg_e15_p360x360_tt6&_nc_cat=102&ig_cache_key=MzcwNzgwNjAzMjgzNzI3MjM2NTc2Mzg2ODA0NjM5MjMzNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fbmZyYW1lX2NvdmVyX2ZyYW1lLkMzIn0%3D&_nc_ohc=HA6sK0ZqZFYQ7kNvwEZPoOt&_nc_oc=AdqQdEAsaMNlLDm4Oo8h6pnKYX5KXPWBCUY6T0UvoY8YVrugj3nJOTiO8BwlA2n5Ihc&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQLi73xa8Vj_wP49W4pTtgLfWIelLFPkEw-8Wv0CRHq-aA&oe=6AB1F601", "url": "https://www.instagram.com/p/DN0xfErUOMt/"}, {"id": "3707748753609907425", "code": "DN0kdjPUNzh", "type": "Carousel", "date": "2025-08-26", "time": "17:51", "weekday": "سه‌شنبه", "hour": 17, "likes": 21, "comments": 0, "plays": 0, "caption": "Chiara Ferragni 💕\nیه کیف متفاوت از برند کیارا 😍\nاسلاید آخر کف کیف رو ببینید واقعا دل میبره 🥹🤌🏽 \nقیمتشو توی استوری گذاشتم حتما چک کنید چون مدل های بیشتر هم اونجا هست 🫨\nواسه سفارش هم دایرکت بهم پیام بدین 😊\n_________________________\n#سرینو #آنلاین_شاپ #سفارش_از_ایتالیا #خرید_از_ایتالیا #ایتالیا #کیارا_فرانی #کیف #مشکی #sarino #onlineshop #chiaraferragni #bag #black #italyshop", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/539497462_17853718533517728_6549864391478814763_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=MzcwNzc0ODczNzcyMTgzMzIxMQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=j1qefVZAGAcQ7kNvwHHQzGH&_nc_oc=AdossZ8Fgdg1IEi-2IRG224IEwDB6NL-7dhoJeF5Ei1B_9SrPkPvliJRJ0wkewRh6AI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQLTL4ATE3rAbmvYxDJ8w_InfPvKs0LE9LJauhHwzo4NSQ&oe=6AB1F61D", "url": "https://www.instagram.com/p/DN0kdjPUNzh/"}, {"id": "3707098013585432016", "code": "DNyQgCXUN3Q", "type": "Carousel", "date": "2025-08-25", "time": "20:19", "weekday": "دوشنبه", "hour": 20, "likes": 18, "comments": 1, "plays": 0, "caption": "Tommy Jeans ♥️\nخوشگل ، خوش قیمت ٫ کاربردی 🫨\nخودم که دارم به خریدش فکر می‌کنم چون قیمتش عالی شده 🫢\nقیمتشو میتونی توی استوری ببینی ولی تخفیفش محدوده 🤯\nواسه سفارش هم بهم دایرکت بده 📥\n_______________________\n\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارش_آنلاین #تامی #تامی_هیلفیگر #تامی_جینز #کراپ #تاپ #کراپ_آستین_بلند  #sarino #onlineshop #tommy #tommyjeans #tommyhilfiger #croptop #crop", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/539461009_17853615444517728_5491590826403531603_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=MzcwNzA5Nzk5OTk1MzkwNzQwOQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=s40Vsu2BeC0Q7kNvwEAfeLk&_nc_oc=Ado8LfYHQjcOQIB9aLuljZzb1Jf9XIx7i71PTHtR4g1CdxL-jpi8DXgIlmA0BEH_q54&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQKjLiqWVnLL6IZ6PR0wTvKwzqg08oCgbUcqStLuMrLMEA&oe=6AB22329", "url": "https://www.instagram.com/p/DNyQgCXUN3Q/"}, {"id": "3705694422861627255", "code": "DNtRXGo0D93", "type": "Carousel", "date": "2025-08-23", "time": "21:50", "weekday": "شنبه", "hour": 21, "likes": 23, "comments": 6, "plays": 0, "caption": "Polo Ralph Lauren 🏇\nمن خودم عاشق کیفای شیشه‌ایم مخصوصا واسه تابستونو دریا 🌊☀️\nحالا دیگه فکر کن انقدر خوشگل و خوشرنگم باشه 🥹🩵\nقیمتشو توی استوری گذاشتم واستون 🥰\nسفارش از ایتالیا هست و واسه ثبت سفارش دایرکت بهم پیام بده 📥\n\n____________________________\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #سفارش_از_ایتالیا #پولو #کیف #تابستون #آبی #sarino #onlineshop #dubai #bag #blue #italy", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/538867762_17853370023517728_4877677215464517886_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=102&ig_cache_key=MzcwNTY5NDQwOTYzMjgyNjkwMA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=mId1SUAakb8Q7kNvwFFOUtx&_nc_oc=AdrcuTM-35KW8L940kxhcoADOTzPHQ0Q7J3K7uiTR6WMf1Y41OM5RvmM-jmBfYU4DZs&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQIYNMN_xFNntjkI7QeuGlOzEIYEXPWwhmzY2EgQBEOa6A&oe=6AB22191", "url": "https://www.instagram.com/p/DNtRXGo0D93/"}, {"id": "3705584077518199230", "code": "DNs4RXh0Nm-", "type": "Reel", "date": "2025-08-23", "time": "18:19", "weekday": "شنبه", "hour": 18, "likes": 140, "comments": 16, "plays": 3853, "caption": "اگه شما هم مثل من برند گِس رو دوست دارید ، قراره که با دیدن این ویدئو کلی ذوق کنید 🥹😍\nموجودی آیتم ها رو باید چک منم واستون پس اگه دوستشون داشتین واسه قیمتش دایرکت بهم پیام بدین 🫢🤗\n\n_____________________________\n#سرینو #آنلاین_شاپ #گِس #کفش #تیشرت #سفارش_از_دبی #خرید_از_دبی #sarino #onlineshop #dubai #سفارش_مستقیم #Guess #guessfactory #ارسال_به_ایران", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/537987767_17853346530517728_7066502624932497140_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=107&ig_cache_key=MzcwNTU4NDA3NzUxODE5OTIzMDE3ODUzMzQ2NTIxNTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzkuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=HiJkEI41AbkQ7kNvwEcbf5g&_nc_oc=AdrV5LWTp1au9hDAdlwe3p7n2plsiv_lUJ4b8f6Z3BUUM20Vf2JJA8jvFm_Ad0ZGNK4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQLujxQ4kuaRf1yhheFSwyZybuQJcpNvn9FIaTI9pj3voQ&oe=6AB20D83", "url": "https://www.instagram.com/p/DNs4RXh0Nm-/"}, {"id": "3701170411005008290", "code": "DNdMuERI9mi", "type": "Carousel", "date": "2025-08-17", "time": "16:01", "weekday": "یک‌شنبه", "hour": 16, "likes": 30, "comments": 4, "plays": 0, "caption": "CALVIN KLEIN SUNGLASSES 😎\nخیلی کیوت و جذابه مخصوصا واسه تابستون و استایل های خاص 😍\nاگه دوست داری عینک آفتابی با یه رنگ خاص داشته باشی این بهترین گزینه‌است 🥹🤌🏽 \nقیمتشو توی دایرکت میتونی ازم بپرسی واسه ثبت سفارش هم همونجا راهنماییت می‌کنم 🥰\n\n_________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #سفارش_از_دبی #سفارش_آنلاین #کلوین_کلاین #عینک_آفتابی #sarino #onlineshop #dubai #sunglasses #calvinklein #ck", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/534992687_17852583102517728_9054138572820107594_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzcwMTE3MDM5NDUzNzk3MzM0Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=7Mpu1dRl3dQQ7kNvwG15MB0&_nc_oc=Ado8msFrx23BKHfMl7EsXV79DErjM1J6n9BzYO3l1h88elsMFNyAMNBRazuD5QZQfPI&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQKQQj7u4JnH3TteUS5kI9E5L9XvK2DPVc1nP5C_3ZzwXg&oe=6AB2034B", "url": "https://www.instagram.com/p/DNdMuERI9mi/"}, {"id": "3698356188855999857", "code": "DNTM1vpoR1x", "type": "Carousel", "date": "2025-08-13", "time": "18:50", "weekday": "چهارشنبه", "hour": 18, "likes": 28, "comments": 4, "plays": 0, "caption": "خوشگل‌ترین - با کیفیت‌ترین - جادارترین - جذاب‌ترین - خوش‌رنگ‌ترین …. کیف ورزشی که میتونی داشته باشی از برند محبوب OYSHO 🥹🤍\nرنگ مشکیش هم موجوده 😍\nقیمتشو توی استوری ها میتونی چک کنی \nثبت سفارش رو هم من توی دایرکت براتون انجام میدم 📨\n____________________\n\n#سرینو #آنلاین_شاپ #خرید_از_دبی #دبی #سفارش_از_دبی #کیف_باشگاه #کیف_ورزشی #اویشو #sarino #onlineshop #dubai #oysho #bag #sportbag", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/532981977_17852064969517728_2974750040107542301_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=MzY5ODM1NjE3MDc2MTc2NDI5Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=q5hjo7cNcAEQ7kNvwEj4QR_&_nc_oc=AdrKnOLbcsQS5UtCM9NYd0SIVk6uWonIoyyMyHVQ_Wu92BrDenAWbmshppMWPJlc-KQ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQJZeZpe5HJM_bhzYfXjepvyfTQxBlcbslB0UEcfzKNgtw&oe=6AB1F383", "url": "https://www.instagram.com/p/DNTM1vpoR1x/"}, {"id": "3695571617181855777", "code": "DNJTs5MI_Ah", "type": "Carousel", "date": "2025-08-09", "time": "22:38", "weekday": "شنبه", "hour": 22, "likes": 30, "comments": 0, "plays": 0, "caption": "Jack&Jones 🐼\nمردونه‌، خوش قیمت و مهم تر از همه کاربردی 🤭\nقیمتشو توی استوری ها گذاشتم میتونید ببینید و مدل های دیگه رو هم در کنارش میتونید مقایسه کنید 📉📈\nواسه سفارش و راهنمایی در مورد سایز بندی من توی دایرکت میتونم کمکتون کنم 📥\n\n__________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #کفش #سفارش_از_دبی #sarino #dubai #onlineshop #jackandjones #shoes #sneakers", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/527650852_17851546134517728_3004828544600247439_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=MzY5NTU3MTYwMjU5Mzk4MzQyNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=vu7r7GtpxCsQ7kNvwFv2EVd&_nc_oc=AdoqFhUNS_1Dh7DG2GJa8Uc5GsdVDIfwOLqn9GdBMq6w69wemjDUrw529yjrH0wfkm4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQKEutBy_doDKN1M-6EN_hCKSROpP8PgdfIMMvFF24FURQ&oe=6AB1F906", "url": "https://www.instagram.com/p/DNJTs5MI_Ah/"}, {"id": "3694060264637918098", "code": "DND8D0coOuS", "type": "Carousel", "date": "2025-08-07", "time": "20:35", "weekday": "پنج‌شنبه", "hour": 20, "likes": 25, "comments": 0, "plays": 0, "caption": "Calvin Klein Performance 🏋🏽‍♀️\nاکسترا آف کلوین کلاین رو از دست ندین 🤭\nاین تخفیفا فقط تا ۲ روزه دیگه روی سایت هستن 🫨\nقیمت همه‌ی نیم تنه‌ها رو توی استوری‌ها میتونید ببینید به جز اسلاید آخر 🤤\n\n___________________\n#سرینو #آنلاین_شاپ #کلوین_کلاین #خرید_از_ایتالیا #سفارش_از_ایتالیا #sarino #onlineshop #calvinklein #ck #calvinkleinperformance #gym #باشگاه #نیم_تنه", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/528312128_17851247346517728_3721857232046143554_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=110&ig_cache_key=MzY5NDA2MDI1MTAzMTYzMDYwNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=I_HciEXvRyoQ7kNvwH6pJnQ&_nc_oc=Adp25H4UrlkFEHT_AP3celkFEdwM12gSTzLIPHw9mSz5RzvYYtcOLPUvztoxCg3jxMQ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQLekH-KeR1gUEbsfnG236utaVaoGUvTVPC1pVZHTuK42g&oe=6AB21415", "url": "https://www.instagram.com/p/DND8D0coOuS/"}, {"id": "3693810129156907451", "code": "DNDDL3oIyG7", "type": "Carousel", "date": "2025-08-07", "time": "12:18", "weekday": "پنج‌شنبه", "hour": 12, "likes": 20, "comments": 0, "plays": 0, "caption": "Calvin Klein 🤍\nیه Heels شیک و کاربردی که توی کند هر دختری باید باشه 🤌🏽\nقیمتشو توی استوری میتونی ببینی 🥹\nواسه ثبت سفارششم بهم دایرکت بده 📥\n_____________________\n\n#سرینو #آنلاین_شاپ #کلوین_کلاین #کفش_پاشنه_بلند #خرید_از_ایتالیا #سفارش_از_ایتالیا #sarino #onlineshop #calvinklein #ck #high_heels #black #italy #shopping", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/528336921_17851197768517728_3286827546219478845_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzY5MzgxMDExODQxOTQ3NjgzNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=8ScvNyN6U_kQ7kNvwHJDtgZ&_nc_oc=AdpngQXfpUnz1DcZBzKzsJx9u2kymFT0Z1VmWI9_A_Yvwjx6aIZxI1VJSHO3FmPLGXo&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQLZqznwC9fPz6a1mKd4LVOx9FQsaTrKehxeNrbRaCtw7g&oe=6AB209D9", "url": "https://www.instagram.com/p/DNDDL3oIyG7/"}, {"id": "3693359975547241455", "code": "DNBc1RaI4Pv", "type": "Reel", "date": "2025-08-06", "time": "21:30", "weekday": "چهارشنبه", "hour": 21, "likes": 111, "comments": 26, "plays": 6094, "caption": "آنباکس اولین سفارشی که توی پیج ثبت کردم 🥹\nبعد از فقط یک هفته رسید و کلی ذوق کردم واسش 🥳\nممنونم از اعتمادتون به من و مرسی واسه این حس و حال خوب 😍\nامیدوارم بتونم توی همه‌ی لحظه‌های قشنگتون شریک باشم 🥰\n\n____________________________\n#سرینو #آنلاین_شاپ #sarino #خرید_از_دبی #onlineshop #خرید_از_ایتالیا #سفارش_مستقیم #سفارش_از_دبی #ارسال_به_ایران #dubai #نایکی #نایک #کفش #آنباکس #nike #unbox #sportshoe", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/528660346_17851126620517728_2755153695331509588_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=105&ig_cache_key=MzY5MzM1OTk3NTU0NzI0MTQ1NTE3ODUxMTI2NjE3NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzkuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzMifQ%3D%3D&_nc_ohc=yUzTgUrs4PEQ7kNvwFlI2wP&_nc_oc=AdorRr6gyVLBMJQmtZhyX-Kc5HnbXMcFQjBlJWjMrPfKk0zI897fc_lBKvILPrNJa5I&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQI798tKNb-0Ra7Ja1bojvdSFgnZJskOeYgZ5X-6G5EG_w&oe=6AB2183C", "url": "https://www.instagram.com/p/DNBc1RaI4Pv/"}, {"id": "3693185368542200410", "code": "DNA1IZ9oMJa", "type": "Carousel", "date": "2025-08-06", "time": "15:37", "weekday": "چهارشنبه", "hour": 15, "likes": 29, "comments": 2, "plays": 0, "caption": "DKNY Limited Sale 🏷️\nاگه دنبال یه کیف مشکی ساده میگردی که بتونی روزانه ازش استفاده کنی این بهترین انتخابه 🖤😍\nتایم تخفیفش خیلی خیلی محدوده 😵\n\n________________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #خرید_از_ایتالیا #کیف #مشکی #sarino #online shop #shopping #dubai #italy #dkny #crossbodybag #camerabag #black", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/527495229_17851085871517728_1118899307605016921_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=MzY5MzE4NTM1NDY2NzYzNjQ2NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=9dWc6_z9anUQ7kNvwHEMYp2&_nc_oc=AdoEK3Kkh9lft37NbQvddDNfpV3UfjNttDmzy7ydr2UKImOvf2tJOkKvRhJFB2725UQ&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=WDgxZ2OkQMaI4ELl9P-LWA&_nc_ss=7a3ba&oh=00_AQL0vtDeL8kKbP0AUH1BcMji3Va6WGoH10WVjr2V-C5D6w&oe=6AB22626", "url": "https://www.instagram.com/p/DNA1IZ9oMJa/"}, {"id": "3691812145963527016", "code": "DM785YxoOto", "type": "Carousel", "date": "2025-08-04", "time": "18:08", "weekday": "دوشنبه", "hour": 18, "likes": 20, "comments": 7, "plays": 0, "caption": "✨ ست مراقبت از مو Hairburst ✨\nشامل شامپو، نرم‌کننده و اسپری Volume & Growth Elixir\n👩🏽‍🦱 مخصوص تقویت رشد مو، افزایش ضخامت و حجم\n💖 مناسب موهای نازک، ضعیف یا آسیب‌دیده\n🌱 حاوی ترکیبات مغذی مثل بیوتین و کافئین\nبدون سولفات و پارابن – مناسب استفاده روزانه\n\n📦 انتخابی عالی برای کسایی که دنبال موهای بلندتر، قوی‌تر و سالم‌تر هستن\n\n__________________________\n#سرینو #آنلاین_شاپ #خرید_از_دبی #شامپو #تقویت_مو #هدیه #sarino #onlineshop #dubai #shampoo #gift #shopping #hairburst", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/526868529_17850854943517728_6696488876233023983_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzY5MTgxMjEzNDIxMTE4NDQ0OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=cXVe7foq0VAQ7kNvwFjDuwk&_nc_oc=AdrSbcLn7eW_BUYiQTnSPgrUXcEKccqf8psSl-b-65y2pfaFi9_U0Jshg7-Nk5cF0ME&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQLXvdP6Sv2B5XjWIlhq1aOOLlyFw35cHQJ2tUeys3jgKA&oe=6AB1FE73", "url": "https://www.instagram.com/p/DM785YxoOto/"}, {"id": "3691794565739817335", "code": "DM745j6o6l3", "type": "Carousel", "date": "2025-08-04", "time": "17:33", "weekday": "دوشنبه", "hour": 17, "likes": 26, "comments": 0, "plays": 0, "caption": "یه لباس خاص و جذاب و متفاوت واسه تابستون 🧡\nرنگش بی نظیره مخصوصا واسه پوست برنز 🤌🏽\nالبته رنگای دیگه هم داره 😍\nاگه خواستی میتونی دایرکت بدی تا من رنگاشو واست بفرستم + قیمت🍊\n\n_____________________________\n#سرینو #آنلاین_شاپ #نارنجی #خرید_از_دبی #لباس_تابستانه #sarino #onlineshop #orange #shein #dubai #شین", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/525620274_17850850587517728_342162447797655214_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=MzY5MTc5NDU1MjQ3NzIxNDU0MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=RYwFBPXFMe0Q7kNvwG8dH94&_nc_oc=AdorPV4kWWj3GyoUZpZdkaMKA4_x6ik05OTXXTTzbpQ59PNB_jU0lS8BZyjOrrz_oQE&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQLAXLtcOtjU4NMEB_fo-XUQbO6xTEp2PORd_jfrGIgi2Q&oe=6AB1FF33", "url": "https://www.instagram.com/p/DM745j6o6l3/"}, {"id": "3690435416267394540", "code": "DM3D3VVI43s", "type": "Carousel", "date": "2025-08-02", "time": "20:33", "weekday": "شنبه", "hour": 20, "likes": 27, "comments": 4, "plays": 0, "caption": "کفشی راحت تر از UltraBoost آدیداس به چشم ندیدم 🤌🏽\nشما اگه تجربه کفش راحت تری داشتین واسم کامنت کنید 😎\nقیمتشو تو استوری ها میتونی ببینی 🤩\n واسه سفارش هم میتونی بهم دایرکت بدی 📥\n\n__________________________\n#سرینو #آنلاین_شاپ #آدیداس #اولترابوست #خرید_از_دبی #sarino #onlineshop #adidas #ultraboost #dubai #shopping", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/526072726_17850609147517728_5658754084546425318_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=108&ig_cache_key=MzY5MDQzNTQwMjQ1MTM3MTU4MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=aR8EZyaxRocQ7kNvwHYMTOb&_nc_oc=AdpX17TB6f8vP4ZDcQByw_Z1O8I8ul2mdHKG4nYLH_TpS4dQYm0OXOWIT1A-GjC208k&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQLiodKsRj4dZBRPLd-lUzxQhli5_eTnyWoTt2v2Tc9SLA&oe=6AB21B2C", "url": "https://www.instagram.com/p/DM3D3VVI43s/"}, {"id": "3690159121792832290", "code": "DM2FCuDIRMi", "type": "Carousel", "date": "2025-08-02", "time": "11:24", "weekday": "شنبه", "hour": 11, "likes": 23, "comments": 2, "plays": 0, "caption": "از اون خریدایی میشه که هر بار نگاش میکنی، مطمئن میشی تصمیم درستی گرفتی 😎 \nساعت از برند Armani Exchange ساده و شیک🖤\nقیمتشو تو استوری میذارم واست 🤩\n\n__________________________________\n#سرینو #آنلاین_شاپ #ساعت #ساعت_مردانه #خرید_از_دبی #خرید_از_ایتالیا #sarino #onlineshop #watch #armaniexchange #shopping", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/527292101_17850553815517728_3789116110722477146_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=MzY5MDE1OTEwNjA1NTk2MDEyNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=fLrc5xL4a64Q7kNvwG8CFsA&_nc_oc=AdpFaFtiD-GR3ydXA4AE4HCw_4_VApQfaU-39r5M1lV32R3ZeK_dwlUoYqClnS0i1BE&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQK-OHSzluDEwxkiT6BMH25kjmuRX03JNQrCYVavC4fX4g&oe=6AB229B2", "url": "https://www.instagram.com/p/DM2FCuDIRMi/"}, {"id": "3688893290039707438", "code": "DMxlOcXI4cu", "type": "Reel", "date": "2025-07-31", "time": "17:30", "weekday": "پنج‌شنبه", "hour": 17, "likes": 40, "comments": 1, "plays": 3259, "caption": "قیمتشو آخر ویدئو گذاشتم، ۱۵٪ تخفیفم داره تازه! 😵‍💫\nاز برند خوب و محبوب Moschino 🫠\nحاضری بخریش؟؟؟\n____________________\n\n#سرینو #آنلاین_شاپ #sarino #خرید_از_دبی #onlineshop #خرید_از_ایتالیا #سفارش_مستقیم #سفارش_از_دبی #ارسال_به_ایران #Moschino #expensivebag", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/526356783_17850326865517728_6236786593861332662_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=104&ig_cache_key=MzY4ODg5MzI5MDAzOTcwNzQzODE3ODUwMzI2ODU5NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzkuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzIifQ%3D%3D&_nc_ohc=JR8LU8OcfOIQ7kNvwEBfueT&_nc_oc=AdrT6l_MpJzfUeQor9XTDf26FP0sUdFkf7EmOzLo-kjX9eQr7HCHO-bbp_kFkRrVJ4o&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQJfPsXFWtfHA-MbGdpEOQe0BwiwlxUgxeKap3dDntmDtg&oe=6AB20AD8", "url": "https://www.instagram.com/p/DMxlOcXI4cu/"}, {"id": "3688232881213395113", "code": "DMvPEOto9Cp", "type": "Carousel", "date": "2025-07-30", "time": "19:37", "weekday": "چهارشنبه", "hour": 19, "likes": 27, "comments": 2, "plays": 0, "caption": "دیگه از این کامل تر؟! 😍\nکافیه از یکی از رایحه های Bath & Body Works خوشت بیاد، هرچیزی که لازم داشته باشی رو میتونی ازش تهیه کنی 🥳\nمورد علاقه‌ی خودم همین سری Into The Night هست که بوش شیرینه ولی نه یه بوی ساده،‌ بلکه با عمق و پیچیدگی\nمیشه گفت شبیه عطرهایی مثل YSL Black Opium یا Lancôme La Nuit Trésor هست 🌙🖤\n________________________________\n#sarino #onlineshop #italy #dubai #shopping #bathandbody #bathandbodyworks #سرینو #آنلاین_شاپ #خرید_از_دبی #خرید_از_ایتالیا #خرید_مستقیم", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/525393077_17850207588517728_3165890736217362626_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=101&ig_cache_key=MzY4ODIzMjg2NDg4MDY0Mjc3OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=PeqhO2BDFnUQ7kNvwFk6GYT&_nc_oc=Adq8vfTdUyTa7TrwCxYIWL1KsczoTg6_ptLwZ-Eiqze2v3TzXAqdriAwmp4420nwanE&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQLwgOs3a4oCumHK0YvbKku4Ypn7XGhsc_7j5ZoPp37H6A&oe=6AB206FD", "url": "https://www.instagram.com/p/DMvPEOto9Cp/"}, {"id": "3688066221407869279", "code": "DMupLArIhlf", "type": "Carousel", "date": "2025-07-30", "time": "14:06", "weekday": "چهارشنبه", "hour": 14, "likes": 22, "comments": 1, "plays": 0, "caption": "کیفی که دست هر کسی نمیبینی 💁🏽‍♀️\nسفارش از ایتالیا 🇮🇹\nواسه قیمتش استوری یا هایلایت رو چک کن🥰 \nواسه سفارشم که مثل همیشه میتونی دایرکت بهم پیام بدی 📥\n\n______________________________________\n\n#سرینو #آنلاین_شاپ #خرید_از_ایتالیا #خرید_از_دبی #سفارش_مستقیم #کیف #ولنتینو #sarino #onlineshop #italy #dubai #handbag #crossbodybag #Valentino #ValentinoBags #Mariovalentino", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/525894753_17850170730517728_5963147033840220660_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzY4ODA2NjIwOTk5OTQyNDAzNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=44ho6lkZTEcQ7kNvwExumGf&_nc_oc=AdrZXqutML2IWW0iP0z9jmwjFC01D0h5yhMmWdgjDT3kyIjN9bkCY9VIYZOvVJY4_7g&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQIriYjOn0axfMQbu4R2NYtku5uMo_tZt7Br7JLYFQx4lQ&oe=6AB1FB3F", "url": "https://www.instagram.com/p/DMupLArIhlf/"}, {"id": "3686685173356835375", "code": "DMpvKHcojIv", "type": "Carousel", "date": "2025-07-28", "time": "16:22", "weekday": "دوشنبه", "hour": 16, "likes": 24, "comments": 3, "plays": 0, "caption": "سِیوِش کن تا گمش نکنی 🤭\nچون این سِت پرکاربرد Kiko خیلی خوش قیمت شده و الان وقت خریدشه💄\nقیمتشو توی استوری میتونی ببینی 🥳 \nواسه ثبت سفارش بهم دایرکت بده 🥰\n\n_________________________________\n#سرینو #آنلاین_شاپ #آنلاین_شاپ_آرایشی #کیکو #sarino #onlineshop #kikomilano #cosmetics #خرید_از_دبی", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/525704525_17849914662517728_1541401814954623657_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=100&ig_cache_key=MzY4NjY4NTE1ODA4MTIxMTU1OQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=dK6Da0mblXAQ7kNvwFwyOpj&_nc_oc=Adru-5lNQAVkP8RJTiImsBzrmyKY-Oi7naBAkVYtiJ2hsjn8dsT2sofcE9S__wB_Rmo&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQITkKaPdj8OHOZpHcx4ngVpNtj1FT35KjzrTsBDYaKyYw&oe=6AB21770", "url": "https://www.instagram.com/p/DMpvKHcojIv/"}, {"id": "3685955921539793912", "code": "DMnJWGxIIP4", "type": "Carousel", "date": "2025-07-27", "time": "16:13", "weekday": "یک‌شنبه", "hour": 16, "likes": 28, "comments": 2, "plays": 0, "caption": "قیمتش عالی شده 🤯 از دستش نده 🫣\n\nکتونی از برند Mario Valentino 🤌🏽🤍\nقیمتشو میتونی توی استوری ببینی\nواسه سفارش دایرکت بهم پیام بده 🥳\n\n___________________________________________\n#سرینو #آنلاین_شاپ #ولنتینو #ماریو_ولنتینو #خرید_از_دبی #Sarino #OnlineShop #Valentino #MarioValentino #DubaiShopping #Sneakers #کتونی", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/525253247_17849771400517728_5508051655562267919_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=110&ig_cache_key=MzY4NTk1NTkwOTI1ODg1MDk1Ng%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNBUk9VU0VMX0lURU0ueHBpZHMuMTE3OS5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=bobiGGDY55UQ7kNvwH5H2iJ&_nc_oc=Adql6uMlU3c2859MAFaPJZo4nuRzrt5T6S4A9J1RNYp-R_i36UvTtfgfiRQIbdnMdt0&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&se=7&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQKlHNlHkRIyQ_6we8fH57F-EXc9fj6-k5mtl0zJsmYEhQ&oe=6AB20FC9", "url": "https://www.instagram.com/p/DMnJWGxIIP4/"}, {"id": "3684445720257179534", "code": "DMhx9yOIy-O", "type": "Reel", "date": "2025-07-25", "time": "14:15", "weekday": "جمعه", "hour": 14, "likes": 35, "comments": 11, "plays": 2227, "caption": "کاربردی‌ترین تیشرتی که می‌تونی تو کمدت داشته باشی 🤍\nمینیمال، باکیفیت و همه‌جا‌پوش!\n\nهر چیزی که بخوای رو از دبی و ایتالیا برات میارم…\nفقط کافیه دایرکت بدی و بگی چی می‌خوای 📩\n_________________________________________\n\n#تیشرت_مینیمال #استایل_روزمره #خرید_از_دبی #خرید_از_ایتالیا #لباس_اورجینال #تیشرت_گس #مد_روز #استایل_خاص #آنلاین_شاپ #سرینو #guessstyle #minimalfashion #casuallook #dubaihaul #italyshopping #luxuryclothing #sarino_shop", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/522887769_17849450283517728_222851777175174968_n.jpg?stp=dst-jpg_e15_s640x640_tt6&_nc_cat=102&ig_cache_key=MzY4NDQ0NTcyMDI1NzE3OTUzNDE3ODQ5NDUwMjc3NTE3NzI4.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjExNzkuc2RyLnZpZGVvX2RlZmF1bHRfY292ZXJfZnJhbWUuQzIifQ%3D%3D&_nc_ohc=GGHrS64foJ0Q7kNvwH2_Ia7&_nc_oc=AdqVrHQSlpk4qa-eohefvKOYfgdq9Zbh_fujA8WN6r2iaPIFuyNAru-iynOdOiJ360M&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQK1TVx8vn4VKYTxc-wydNLesTt_8EWxvx6YMSKpyxLTFg&oe=6AB20B27", "url": "https://www.instagram.com/p/DMhx9yOIy-O/"}, {"id": "3682368324536223047", "code": "DMaZnssIcVH", "type": "Photo", "date": "2025-07-22", "time": "17:25", "weekday": "سه‌شنبه", "hour": 17, "likes": 35, "comments": 13, "plays": 0, "caption": "⁨\tThis is the start of something New 😍\nبه «سَرینو» خوش اومدین 💫\nمن سریر هستم و اینجام تا با هم کلی تجربه‌ی خرید جدید، قشنگ و هیجان‌انگیز بسازیم! 🦋\n\n🔹 من آیتم‌های تخفیف‌خورده رو توی استوری باهاتون به اشتراک می‌ذارم\n🔹 شما هم اگه محصول خاصی مدنظرتون بود، فقط کافیه لینک‌شو از استور‌های دبی یا ایتالیا برام بفرستین\nمن خرید رو براتون انجام می‌دم و تا رسیدن بسته کنار شما هستم 📦✈️\n\n📩 برای ثبت سفارش و سوالات، از طریق دایرکت با من در تماس باشین\n\n________________________________\n#سفارش_آنلاین #سفارش_از_دبی #سفارش_از_ایتالیا \n#خرید_بدون_واسطه #آنلاین_شاپ #سرینو #sarino \n#ارسال_به_ایران #سفارش_مستقیم #خرید_مطمئن \n#معرفی_پیج #لوگوی_جدید #پیج_جدید⁩", "thumbnail": "https://scontent-arn2-1.cdninstagram.com/v/t51.82787-15/521967218_17849042067517728_343154357839999571_n.jpg?stp=dst-jpg_e35_p1080x1080_sh2.08_tt6&_nc_cat=104&ig_cache_key=MzY4MjM2ODMyNDUzNjIyMzA0Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTQ0MC5zZHIucmVndWxhcl9waG90by5DMiJ9&_nc_ohc=om5nC5bOkl8Q7kNvwHxmKrx&_nc_oc=Ado9v2umILJ3_hLjuLZix7aAgIK3_0eF2Y_82C0gJQBKL_rJPz43j0CEBwiaLBc6t2M&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-arn2-1.cdninstagram.com&_nc_gid=Lbso781-qAOHEWM4B1q6jQ&_nc_ss=7a3ba&oh=00_AQJTrMmc3VlGkuSL0dySiRpVwNDfKFLp31R97o1VN9VNoQ&oe=6AB2100B", "url": "https://www.instagram.com/p/DMaZnssIcVH/"}];
+    let currentFilter = 'ALL';
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+
+      if (tabId === 'tab-charts') {
+        initCharts();
+      }
+    }
+
+    function filterPosts(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const sortBy = document.getElementById('sortSelect').value;
+
+      let filtered = RAW_POSTS.filter(p => {
+        if (currentFilter !== 'ALL' && p.type !== currentFilter) return false;
+        if (q) {
+          const matchCaption = (p.caption || '').toLowerCase().includes(q);
+          const matchCode = (p.code || '').toLowerCase().includes(q);
+          if (!matchCaption && !matchCode) return false;
+        }
+        return true;
+      });
+
+      // Sort
+      if (sortBy === 'likes_desc') {
+        filtered.sort((a, b) => b.likes - a.likes);
+      } else if (sortBy === 'comments_desc') {
+        filtered.sort((a, b) => b.comments - a.comments);
+      } else if (sortBy === 'plays_desc') {
+        filtered.sort((a, b) => (b.plays || 0) - (a.plays || 0));
+      } else if (sortBy === 'newest') {
+        filtered.sort((a, b) => (b.date + ' ' + b.time).localeCompare(a.date + ' ' + a.time));
+      } else if (sortBy === 'oldest') {
+        filtered.sort((a, b) => (a.date + ' ' + a.time).localeCompare(b.date + ' ' + b.time));
+      }
+
+      renderPosts(filtered);
+    }
+
+    function renderPosts(posts) {
+      const container = document.getElementById('postsGrid');
+      const countMsg = document.getElementById('postsCountMsg');
+      countMsg.innerText = `نمایش ${posts.length} پست از ${RAW_POSTS.length} پست`;
+
+      if (posts.length === 0) {
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-muted);">پستی با این مشخصات یافت نشد.</div>';
+        return;
+      }
+
+      container.innerHTML = posts.map(p => {
+        const typeFa = p.type === 'Reel' ? 'ریلز ویدیو' : (p.type === 'Carousel' ? 'اسلایدی' : 'تک‌عکس');
+        const cleanCaption = p.caption ? p.caption.replace(/</g, '&lt;').replace(/>/g, '&gt;') : '(بدون متن)';
+        const playsBadge = p.plays ? `<div class="stat-item"><span class="stat-num">${Number(p.plays).toLocaleString()}</span><span class="stat-lbl">ویو</span></div>` : '';
+
+        return `
+          <div class="post-card">
+            <div>
+              <div class="post-top">
+                <span class="post-type type-${p.type}">${typeFa}</span>
+                <span class="post-date">${p.date} (${p.weekday})</span>
+              </div>
+              <div class="post-caption" title="${cleanCaption}">${cleanCaption}</div>
+            </div>
+            <div>
+              <div class="post-stats">
+                <div class="stat-item">
+                  <span class="stat-num">${Number(p.likes).toLocaleString()}</span>
+                  <span class="stat-lbl">لایک</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-num">${Number(p.comments).toLocaleString()}</span>
+                  <span class="stat-lbl">کامنت</span>
+                </div>
+                ${playsBadge}
+              </div>
+              <a href="${p.url}" target="_blank" rel="noopener noreferrer" class="post-link">مشاهده در اینستاگرام ↗</a>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Chart instances
+    let chart1 = null;
+    let chart2 = null;
+
+    function initCharts() {
+      if (chart1) return;
+
+      const ctx1 = document.getElementById('chartFormatLikes').getContext('2d');
+      chart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: ['ریلز ویدیو', 'اسلایدی', 'تک‌عکس'],
+          datasets: [{
+            label: 'میانگین لایک',
+            data: [109.3, 31.3, 37.3],
+            backgroundColor: [
+              'rgba(236, 72, 153, 0.7)',
+              'rgba(59, 130, 246, 0.7)',
+              'rgba(16, 185, 129, 0.7)'
+            ],
+            borderColor: [
+              '#ec4899',
+              '#3b82f6',
+              '#10b981'
+            ],
+            borderWidth: 1,
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.08)' },
+              ticks: { color: '#9ca3af', font: { family: 'Vazirmatn' } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#e5e7eb', font: { family: 'Vazirmatn', weight: 'bold' } }
+            }
+          }
+        }
+      });
+
+      const ctx2 = document.getElementById('chartMonthlyPosts').getContext('2d');
+      const monthlyLabels = ['2025-07', '2025-08', '2025-09', '2025-10', '2025-11', '2025-12', '2026-06', '2026-07', '2026-08', '2026-09'];
+      const monthlyData = [7, 18, 22, 24, 14, 12, 2, 5, 10, 5];
+
+      chart2 = new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: monthlyLabels,
+          datasets: [{
+            label: 'تعداد پست در ماه',
+            data: monthlyData,
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.2)',
+            fill: true,
+            tension: 0.35,
+            pointBackgroundColor: '#8b5cf6',
+            pointRadius: 5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.08)' },
+              ticks: { color: '#9ca3af', font: { family: 'Vazirmatn' } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#e5e7eb', font: { family: 'Vazirmatn' } }
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize posts list
+    window.addEventListener('DOMContentLoaded', () => {
+      applyFilters();
+    });
+  </script>
+</body>
+</html>
