@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://devsponsors.github.io">
+    <img src="https://devsponsors.github.io/assets/badges/sponsor.svg" alt="DevSponsors Badge">
+  </a>
+</p>
+
 # گزارش راهبردی و نقشه راه رشد آنلاین شاپ سَرینو (sarino.shop_)
 
 داشبورد هوشمند تعاملی و سند جامع استراتژی محتوا، تحلیل رقبا، برنامه اتوماسیون نوین هاب و نقشه راه ۳۰ روزه برای دستیابی به ۲۰,۰۰۰ فالوور.
